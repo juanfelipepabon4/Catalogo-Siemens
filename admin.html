@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="noche">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editor de fotos · Catálogo SIEMENS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="img/logo-ip7-noche.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+<style>
+  .admin{display:grid;grid-template-columns:330px 1fr;gap:26px;align-items:start;padding:26px 0 70px}
+  .lista-fotos{max-height:74dvh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;
+    border:1px solid var(--borde);border-radius:14px;padding:10px;background:var(--panel)}
+  .slot{display:flex;gap:10px;align-items:center;padding:7px 9px;border-radius:10px;cursor:pointer;
+    border:1px solid transparent;background:transparent;text-align:left;width:100%}
+  .slot:hover{background:var(--panel-2)}
+  .slot.activo{border-color:var(--marca);background:var(--panel-2)}
+  .slot img{width:42px;height:42px;object-fit:contain;background:#fff;border-radius:7px;padding:2px;flex:0 0 auto}
+  .slot .n{font-size:12.5px;font-weight:700;line-height:1.25}
+  .slot .f{font-size:10.5px;color:var(--texto-2);font-family:ui-monospace,monospace}
+  .lienzo-caja{border:1px solid var(--borde);border-radius:16px;background:var(--panel);padding:18px}
+  .zona{border:2px dashed var(--borde);border-radius:14px;padding:26px;text-align:center;color:var(--texto-2);
+    cursor:pointer;transition:.2s;font-size:13.5px}
+  .zona.sobre{border-color:var(--marca);color:var(--texto)}
+  #lienzo{width:100%;max-width:520px;margin:16px auto 0;display:block;border-radius:12px;
+    background:#fff;cursor:grab;touch-action:none;box-shadow:var(--sombra)}
+  #lienzo:active{cursor:grabbing}
+  .controles{display:grid;gap:12px;margin-top:16px}
+  .control{display:flex;align-items:center;gap:12px;font-size:12.5px}
+  .control label{min-width:78px;font-weight:700}
+  .control input[type=range]{flex:1;accent-color:var(--marca)}
+  .estado{font-size:12.5px;color:var(--texto-2);margin-top:12px;line-height:1.6}
+  .estado b{color:var(--marca)}
+  @media(max-width:900px){.admin{grid-template-columns:1fr}.lista-fotos{max-height:300px}}
+</style>
+</head>
+<body>
+<div id="destello"></div>
+
+<header class="cabecera">
+  <div class="contenedor fila">
+    <a class="marca" href="index.html">
+      <img id="logo-img" src="img/logo-ip7-noche.png" alt="IP7">
+      <span class="separador" aria-hidden="true"></span>
+      <span class="cliente"><span class="cliente-texto">EDITOR</span><small>Herramienta interna</small></span>
+    </a>
+    <div class="acciones">
+      <a class="btn btn-fantasma" href="index.html">Volver al catálogo</a>
+      <button class="btn btn-fantasma btn-icono" id="btn-tema" aria-label="Cambiar modo"><span id="icono-tema">☀︎</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="contenedor admin">
+  <section>
+    <h2 style="font-size:18px;margin:0 0 4px">1 · Elige la foto a reemplazar</h2>
+    <p class="sub" style="font-size:13px;margin:0 0 12px">
+      <input type="search" id="buscar-slot" placeholder="Filtrar producto…" style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--borde);background:var(--panel)">
+    </p>
+    <div class="lista-fotos" id="lista-fotos"></div>
+  </section>
+
+  <section class="lienzo-caja">
+    <h2 style="font-size:18px;margin:0 0 4px">2 · Sube la nueva foto y ajústala</h2>
+    <p class="sub" style="font-size:13px;margin:0 0 14px" id="destino">Ninguna foto seleccionada todavía.</p>
+
+    <div class="zona" id="zona">
+      Arrastra aquí la imagen nueva o haz clic para buscarla
+      <input type="file" id="archivo" accept="image/*" hidden>
+    </div>
+
+    <canvas id="lienzo" width="1000" height="1000"></canvas>
+
+    <div class="controles">
+      <div class="control"><label for="zoom">Zoom</label><input type="range" id="zoom" min="0.2" max="4" step="0.01" value="1"><span id="zoom-val">100%</span></div>
+      <div class="control"><label for="fondo">Fondo</label>
+        <select id="fondo" style="flex:1;padding:8px 10px;border-radius:9px;border:1px solid var(--borde);background:var(--panel)">
+          <option value="#ffffff">Blanco (recomendado)</option>
+          <option value="transparente">Transparente (PNG)</option>
+        </select>
+      </div>
+      <div class="control"><label for="formato">Formato</label>
+        <select id="formato" style="flex:1;padding:8px 10px;border-radius:9px;border:1px solid var(--borde);background:var(--panel)">
+          <option value="1000x1000">Cuadrada 1000 × 1000</option>
+          <option value="1200x900">Horizontal 1200 × 900 (4:3)</option>
+          <option value="900x1200">Vertical 900 × 1200 (3:4)</option>
+        </select>
+      </div>
+      <div class="control" style="gap:8px">
+        <button class="btn btn-fantasma" id="btn-encajar" style="flex:1">Encajar</button>
+        <button class="btn btn-fantasma" id="btn-llenar" style="flex:1">Llenar</button>
+        <button class="btn btn-fantasma" id="btn-reset" style="flex:1">Centrar</button>
+      </div>
+    </div>
+
+    <h2 style="font-size:18px;margin:22px 0 4px">3 · Guarda</h2>
+    <div class="acciones-modal">
+      <button class="btn btn-marca" id="btn-guardar">Guardar en la carpeta del proyecto</button>
+      <button class="btn btn-fantasma" id="btn-descargar">Descargar imagen</button>
+    </div>
+    <p class="estado" id="estado">
+      <b>Guardar en la carpeta</b> funciona en Chrome y Edge de escritorio: te pide elegir la carpeta
+      <code>web/img</code> una sola vez y escribe el archivo con el nombre correcto.
+      En otros navegadores usa <b>Descargar</b> y sube el archivo manualmente a <code>web/img</code>.
+    </p>
+  </section>
+</main>
+
+<div id="brindis"></div>
+
+<script src="js/datos.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
