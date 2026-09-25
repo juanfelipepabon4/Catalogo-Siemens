@@ -105,7 +105,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .menu{display:flex;align-items:center;gap:4px;margin-left:auto}
 .menu-item{position:relative}
 .menu-enlace{
-  display:inline-flex;align-items:center;gap:6px;background:none;border:0;cursor:pointer;
+  white-space:nowrap;display:inline-flex;align-items:center;gap:6px;background:none;border:0;cursor:pointer;
   font-size:14px;font-weight:500;color:var(--texto-2);padding:9px 13px;border-radius:9px;
   transition:color .2s,background .2s;
 }
@@ -385,6 +385,10 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
 /* fotos ya ajustadas exactas a la caja (ambientadas, no de fondo blanco):
    sin ese margen de 10px se vería un marco blanco contrastando con la foto */
 .galeria.sin-marco .pista img{padding:0}
+/* trofeos: caja un poco más alargada (4:5). Con cover, una foto 4:3 se recorta al centro
+   sin deformarse; las fotos nuevas ya en 4:5 encajan exactas. */
+.galeria.alta{aspect-ratio:4/5}
+.galeria.alta .pista img{object-fit:cover}
 .galeria .flecha{
   position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;
   border:none;background:rgba(6,26,29,.62);color:#fff;cursor:pointer;display:grid;place-items:center;
@@ -537,8 +541,13 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
 #brindis.ver{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- Responsive ---------- */
-@media (max-width:1100px){
+@media (max-width:1280px){
   .acciones #btn-asesor{display:none}
+}
+@media (max-width:1180px){
+  .menu{display:none}
+  .hamburguesa{display:grid;place-items:center}
+  .acciones{margin-left:auto}
 }
 @media (max-width:960px){
   .cinema{height:calc(100vh + 1330px)}
@@ -594,6 +603,96 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
   .fila-2{grid-template-columns:1fr}
   .galeria .flecha{opacity:1;width:28px;height:28px}
 }
+
+/* ---------- Acceso (login) ---------- */
+.btn-acceso{gap:7px}
+html:not(.con-sesion) .btn-acceso{border-color:color-mix(in srgb,var(--marca) 55%,transparent);color:var(--marca)}
+.bloqueo{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:12px 13px;border-radius:11px;
+  border:1px dashed color-mix(in srgb,var(--marca) 55%,transparent);
+  background:color-mix(in srgb,var(--marca) 8%,transparent);
+  color:var(--texto-2);font-size:12.5px;line-height:1.35;text-align:left;cursor:pointer;width:100%;
+  transition:background .2s,border-color .2s;
+}
+.bloqueo:hover{background:color-mix(in srgb,var(--marca) 16%,transparent);border-color:var(--marca)}
+.bloqueo svg{flex:0 0 auto;color:var(--marca)}
+.bloqueo b{color:var(--texto);font-weight:600}
+.caja-acceso{max-width:420px}
+.error-acceso{margin:-4px 0 12px;padding:9px 12px;border-radius:9px;font-size:13px;
+  background:color-mix(in srgb,#e5484d 14%,transparent);color:#ff8a8e;border:1px solid color-mix(in srgb,#e5484d 40%,transparent)}
+html[data-tema="dia"] .error-acceso{color:#b4232a}
+.ayuda-acceso{margin:14px 0 0;font-size:12.5px;color:var(--texto-2)}
+.ayuda-acceso a{color:var(--marca);font-weight:600}
+.cajon nav > button.cajon-acceso{
+  padding:12px 14px;border-radius:11px;font-size:14.5px;font-weight:600;text-align:left;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--marca) 55%,transparent);background:transparent;color:var(--marca);
+}
+
+/* ---------- Encabezados centrados de sección ---------- */
+.encabezado-centro{text-align:center;margin:0 auto 34px;max-width:64ch}
+.encabezado-centro .sub{margin-inline:auto}
+.ojo{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--marca);margin-bottom:10px}
+
+/* ---------- Proveedores premium (7 × 2) ---------- */
+.rejilla-alianzas{display:grid;grid-template-columns:repeat(7,1fr);gap:16px}
+.alianza{
+  display:grid;place-items:center;text-align:center;min-height:86px;padding:14px 12px;
+  background:var(--panel);border:1px solid var(--borde);border-radius:20px;
+  font-weight:700;font-size:15px;letter-spacing:-.005em;color:var(--texto);
+  transition:transform .22s,border-color .22s,box-shadow .22s;
+}
+.alianza:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--marca) 50%,transparent);box-shadow:var(--sombra)}
+html[data-tema="dia"] .alianza{background:#fff}
+
+/* ---------- Más catálogos ---------- */
+.bloque-catalogos{
+  padding:56px clamp(18px,4vw,44px) 48px;border-radius:28px;color:#fff;
+  background:linear-gradient(160deg,#0a7078 0%,#00575d 45%,#063a3f 100%);
+  border:1px solid rgba(255,255,255,.14);
+}
+.bloque-catalogos .ojo{color:rgba(255,255,255,.75)}
+.bloque-catalogos h2{color:#fff}
+.bloque-catalogos .sub{color:rgba(255,255,255,.78)}
+.catalogos-web{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:46px}
+.cat-web{
+  display:flex;flex-direction:column;gap:4px;padding:20px 22px;border-radius:18px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;
+  transition:transform .22s,background .22s;
+}
+.cat-web:hover{transform:translateY(-3px);background:rgba(255,255,255,.18)}
+.cat-web b{font-size:16px;font-weight:600}
+.cat-web small{font-size:12.5px;color:rgba(255,255,255,.7)}
+.cat-web .ir{margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.subtitulo-bloque{text-align:center;margin-bottom:24px}
+.subtitulo-bloque span{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.subtitulo-bloque h3{margin:8px 0 0;font-size:clamp(1.3rem,2.4vw,1.8rem);font-weight:600;color:#fff}
+.catalogos-pdf{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat-pdf{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
+  min-height:160px;padding:22px 14px;border-radius:20px;background:#fff;color:#062226;cursor:pointer;
+  border:0;font:inherit;transition:transform .22s,box-shadow .22s;
+}
+.cat-pdf:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.cat-pdf svg{color:#b7c9ca;margin-bottom:6px}
+.cat-pdf b{font-size:15px;font-weight:700;line-height:1.25}
+.cat-pdf small{font-size:12.5px;color:#5f7e81}
+.cat-pdf em{font-style:normal;font-size:11px;font-weight:600;color:var(--marca-fuerte)}
+.catalogos-pdf .cat-pdf:nth-child(n+6){grid-column:auto}
+
+/* ---------- Responsive de las secciones nuevas ---------- */
+@media (max-width:1100px){
+  .rejilla-alianzas{grid-template-columns:repeat(4,1fr)}
+  .catalogos-pdf{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:720px){
+  .rejilla-alianzas{grid-template-columns:repeat(2,1fr);gap:10px}
+  .alianza{min-height:64px;font-size:14px;border-radius:16px}
+  .catalogos-web{grid-template-columns:1fr}
+  .catalogos-pdf{grid-template-columns:repeat(2,1fr);gap:10px}
+  .cat-pdf{min-height:140px;padding:16px 10px}
+  .bloque-catalogos{padding:38px 16px 32px;border-radius:22px}
+  .cabecera #btn-login{display:none}
+}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
   .pista-scroll::before{animation:none;transform:none}
@@ -601,6 +700,8 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
     transition:none !important;
   }
 }
+.comercial .av{overflow:hidden}
+.comercial .av img{width:100%;height:100%;object-fit:cover}
 
 </style>
 </head>
@@ -638,12 +739,17 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
         </div>
       </div>
 
+      <a class="menu-enlace" href="#catalogos">Más catálogos</a>
       <a class="menu-enlace" href="#envios">Envíos</a>
       <a class="menu-enlace" href="#contacto">Contacto</a>
     </nav>
 
     <div class="acciones">
       <button class="btn btn-fantasma" id="btn-asesor">Hablar con un ejecutivo</button>
+      <button class="btn btn-fantasma btn-acceso" id="btn-login">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span id="txt-login">Acceder</span>
+      </button>
       <button class="btn btn-fantasma chip-carrito" id="btn-carrito">
         Seleccionados<span class="cuenta" id="cuenta-carrito">0</span>
       </button>
@@ -663,8 +769,11 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
   <nav>
     <a href="#catalogo" data-cat="todas">Todo el catálogo</a>
     <div class="cajon-cats" id="cajon-cats"></div>
+    <a href="#alianzas">Alianzas</a>
+    <a href="#catalogos">Más catálogos</a>
     <a href="#envios">Valores de entrega</a>
     <a href="#contacto">Contacto</a>
+    <button class="cajon-acceso" id="cajon-login">Acceder</button>
   </nav>
 </div>
 
@@ -738,6 +847,34 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
   </div>
 </section>
 
+<!-- ================= ALIANZAS ================= -->
+<section class="seccion alianzas" id="alianzas">
+  <div class="contenedor">
+    <div class="encabezado-centro">
+      <span class="ojo">Alianzas</span>
+      <h2>Proveedores premium</h2>
+      <p class="sub">Llevamos tu marca a productos de primer nivel gracias a nuestras alianzas con las mejores marcas del mercado.</p>
+    </div>
+    <div class="rejilla-alianzas" id="rejilla-alianzas"></div>
+  </div>
+</section>
+
+<!-- ================= MÁS CATÁLOGOS ================= -->
+<section class="seccion" id="catalogos">
+  <div class="contenedor">
+    <div class="bloque-catalogos">
+      <div class="encabezado-centro">
+        <span class="ojo">Amplía tu oferta</span>
+        <h2>Más catálogos IP7</h2>
+        <p class="sub">Explora nuestros catálogos digitales y descarga las líneas completas por producto, sin saturar esta página.</p>
+      </div>
+      <div class="catalogos-web" id="catalogos-web"></div>
+      <div class="subtitulo-bloque"><span>Recursos descargables</span><h3>Catálogos completos en PDF</h3></div>
+      <div class="catalogos-pdf" id="catalogos-pdf"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= ENVÍOS ================= -->
 <section class="seccion" id="envios">
   <div class="contenedor">
@@ -767,8 +904,6 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
       Calle 72A #63-12, Bogotá · <a href="https://www.ip7.com.co" target="_blank" rel="noopener">www.ip7.com.co</a>
     </small>
     <small>Catálogo SIEMENS · Precios vigentes hasta el <span class="vigencia"></span></small>
-  </div>
-  <div class="contenedor" style="margin-top:14px">
   </div>
 </footer>
 
@@ -832,6 +967,24 @@ html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
   </div>
 </div>
 
+<!-- ================= MODAL ACCESO ================= -->
+<div class="modal" id="modal-acceso">
+  <div class="caja caja-acceso">
+    <h3>Acceso para clientes SIEMENS</h3>
+    <p class="sub">Ingresa con tu usuario para ver los precios por escala y solicitar cotizaciones.</p>
+    <form id="form-acceso" autocomplete="on">
+      <div class="campo"><label for="a-usuario">Usuario</label><input id="a-usuario" name="usuario" autocomplete="username" autocapitalize="none" required></div>
+      <div class="campo"><label for="a-clave">Contraseña</label><input id="a-clave" name="clave" type="password" autocomplete="current-password" required></div>
+      <div class="error-acceso" id="error-acceso" hidden>Usuario o contraseña incorrectos.</div>
+      <div class="acciones-modal">
+        <button type="submit" class="btn btn-marca">Ingresar</button>
+        <button type="button" class="btn btn-fantasma" id="cerrar-acceso">Cancelar</button>
+      </div>
+      <p class="ayuda-acceso">¿No tienes acceso? <a href="#contacto" id="pedir-acceso">Solicítalo a tu ejecutivo</a>.</p>
+    </form>
+  </div>
+</div>
+
 <!-- ================= MODAL EJECUTIVOS ================= -->
 <div class="modal" id="modal-asesor">
   <div class="caja">
@@ -879,11 +1032,22 @@ const CONFIG = {
      los que queden sin email no aparecen en el selector de cotización.
      -------------------------------------------------------------------- */
   comerciales: [
-    { nombre: 'Sevastian',      cargo: 'Ejecutivo de cuenta SIEMENS',
-      whatsapp: '',             email: 'ejecutivo.comercial3@ip7.com.co' },
+    /* foto: ruta dentro de img/ (ej. 'img/sevastian.jpg'). Sin foto se muestra la inicial. */
+    { nombre: 'Sevastian Velosa', cargo: 'Ejecutivo comercial · Cuenta SIEMENS', foto: null,
+      whatsapp: '573001715355', email: 'ejecutivo.comercial3@ip7.com.co' },
     { nombre: 'Carlos Salinas', cargo: 'Dirección comercial',
       whatsapp: '573002176412', email: 'carlossalinas@ip7.com.co' }
   ],
+
+  /* --------------------------------------------------------------------
+     ACCESO (usuario Siemens). Sin sesión no se ven precios ni se puede cotizar.
+     Se guarda la huella SHA-256 de  "usuario:contraseña"  (usuario en minúsculas),
+     no la contraseña. Para cambiarla, calcula la huella de la nueva combinación:
+       node -e "console.log(require('crypto').createHash('sha256').update('usuario:clave').digest('hex'))"
+     OJO: es un acceso del lado del navegador; frena a un visitante casual pero no
+     es seguridad real (los precios viajan en este mismo archivo).
+     -------------------------------------------------------------------- */
+  acceso: { hash: '40b477ea3a9203281d5bc8b7d336106cf68eb3ba32ca40f88ab30dc7e92ec451' },
 
   categorias: [
     { id: 'morrales',        nombre: 'Morrales y Maletines' },
@@ -1122,16 +1286,16 @@ const PRODUCTOS = [
   { id:'placa-reconocimiento', cat:'reconocimientos', nombre:'Placa de Reconocimiento', ref:'Consultar', sinMarco:true,
     desc:'Placa personalizada, ideal para reconocer el esfuerzo de tus colaboradores y de quienes dejan huella. Un detalle significativo que celebra logros y compromiso.',
     fotos:['placa-reconocimiento.jpg'], escalas:[], cotizacion:true },
-  { id:'trofeo-base-pino', cat:'reconocimientos', nombre:'Trofeo con Base de Pino', ref:'Consultar', sinMarco:true,
+  { id:'trofeo-base-pino', cat:'reconocimientos', nombre:'Trofeo con Base de Pino', ref:'Consultar', sinMarco:true, formato:'alto',
     desc:'Elegante trofeo con cuerpo en acrílico cristal de 8 mm, grabado láser personalizado con texto y logotipo. Incluye base en madera de pino y placa frontal en acrílico negro grabado.',
     fotos:['trofeo-base-pino.jpg'], escalas:[], cotizacion:true },
-  { id:'trofeos-zeus', cat:'reconocimientos', nombre:'Trofeos Zeus', ref:'Consultar', sinMarco:true,
+  { id:'trofeos-zeus', cat:'reconocimientos', nombre:'Trofeos Zeus', ref:'Consultar', sinMarco:true, formato:'alto',
     desc:'Trofeo en acrílico cristal de 8 mm de grosor con base del mismo material. Recubierto con acrílico espejo de 2 mm y grabado láser personalizado con textos y logotipos a color.',
     fotos:['trofeos-zeus.jpg'], escalas:[], cotizacion:true },
-  { id:'trofeo-base-negra', cat:'reconocimientos', nombre:'Trofeo Base Negra', ref:'Consultar', sinMarco:true,
+  { id:'trofeo-base-negra', cat:'reconocimientos', nombre:'Trofeo Base Negra', ref:'Consultar', sinMarco:true, formato:'alto',
     desc:'Trofeo con cuerpo en acrílico cristal de 8 mm, grabado láser con textos y logotipos totalmente personalizados. Base en madera con acabado negro y placa frontal en acrílico.',
     fotos:['trofeo-base-negra.jpg'], escalas:[], cotizacion:true },
-  { id:'trofeo-con-estrella', cat:'reconocimientos', nombre:'Trofeo con Estrella', ref:'Consultar', sinMarco:true,
+  { id:'trofeo-con-estrella', cat:'reconocimientos', nombre:'Trofeo con Estrella', ref:'Consultar', sinMarco:true, formato:'alto',
     desc:'Diseño elegante y moderno, ideal para reconocer logros destacados. El cuerpo en vidrio cristal aporta distinción y la estrella metálica simboliza excelencia y superación.',
     fotos:['trofeo-con-estrella.jpg'], escalas:[], cotizacion:true },
   { id:'medallas-bano-oro', cat:'reconocimientos', nombre:'Medallas en Baño de Oro', ref:'Consultar', sinMarco:true,
@@ -1205,6 +1369,31 @@ const PRODUCTOS = [
     fotos:['bola-antiestres-neon.jpg'], escalas:[[10,50,18400],[51,100,8700],[101,null,6500]] },
 ];
 
+/* Proveedores / marcas aliadas (sección "Proveedores premium") */
+const PROVEEDORES = ['Stanley','Mario Hernández','Arturo Calle','Ralph Lauren','Lacoste','Adidas','Juan Valdez',
+  'Café Quindío','Decathlon','Brisa','Nike','Vélez','Loto del Sur','Rondo'];
+
+/* Catálogos digitales de IP7 (sección "Más catálogos") */
+const CATALOGOS_WEB = [
+  { nombre:'Catálogo digital IP7',      detalle:'ip7.cataprom.com',              url:'https://ip7.cataprom.com/' },
+  { nombre:'Catálogo alternativo',      detalle:'ip7-alternativa.muy.promo',     url:'https://ip7-alternativa.muy.promo/' },
+  { nombre:'Promocionales en Línea',    detalle:'promocionalesenlinea.com',      url:'https://www.promocionalesenlinea.com/Imagenperfecta7?limit=42' }
+];
+
+/* Catálogos completos en PDF. Cuando tengas el enlace de descarga de cada uno,
+   pégalo en "url". Mientras esté en null, la tarjeta le pide el archivo al ejecutivo. */
+const CATALOGOS_PDF = [
+  { nombre:'Ecológico',                 peso:'67.9 MB', url:null },
+  { nombre:'Comestibles',               peso:'60.4 MB', url:null },
+  { nombre:'Trofeos, Placas y Medallas',peso:'61.5 MB', url:null },
+  { nombre:'Litografía',                peso:'46.8 MB', url:null },
+  { nombre:'Recién Nacidos',            peso:'31.7 MB', url:null },
+  { nombre:'Mascotas (PET)',            peso:'42.9 MB', url:null },
+  { nombre:'Peluches',                  peso:'16.3 MB', url:null },
+  { nombre:'Portadocumentos',           peso:'32.5 MB', url:null },
+  { nombre:'Inflables',                 peso:'3.7 MB',  url:null }
+];
+
 /* Valores de envío informativos (pág. 24 del catálogo) */
 const ENVIOS = [
   { zona:'Entregas en Bogotá', valor:16500 },
@@ -1252,6 +1441,45 @@ const ENVIOS = [
     clearTimeout(brindis._t);
     brindis._t = setTimeout(() => el.classList.remove('ver'), 2200);
   }
+
+
+  /* ---------------------------------------------------------------- acceso */
+  function sha256(msg) {
+    const enc = new TextEncoder().encode(msg);
+    const H = [], K = [];
+    const esPrimo = x => { for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+    for (let p = 2, n = 0; n < 64; p++) {
+      if (!esPrimo(p)) continue;
+      if (n < 8) H[n] = (Math.pow(p, 1 / 2) % 1) * 4294967296 | 0;
+      K[n++] = (Math.pow(p, 1 / 3) % 1) * 4294967296 | 0;
+    }
+    const l = enc.length, nb = (((l + 8) >> 6) + 1) << 4, w = new Array(nb).fill(0);
+    for (let i = 0; i < l; i++) w[i >> 2] |= enc[i] << (24 - (i & 3) * 8);
+    w[l >> 2] |= 0x80 << (24 - (l & 3) * 8);
+    w[nb - 1] = l * 8;
+    for (let o = 0; o < nb; o += 16) {
+      const m = w.slice(o, o + 16);
+      for (let i = 16; i < 64; i++) {
+        const a = m[i - 15], b = m[i - 2];
+        m[i] = (m[i - 16] + ((a >>> 7 | a << 25) ^ (a >>> 18 | a << 14) ^ (a >>> 3)) + m[i - 7] +
+                ((b >>> 17 | b << 15) ^ (b >>> 19 | b << 13) ^ (b >>> 10))) | 0;
+      }
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let i = 0; i < 64; i++) {
+        const t1 = (h + ((e >>> 6 | e << 26) ^ (e >>> 11 | e << 21) ^ (e >>> 25 | e << 7)) +
+                    ((e & f) ^ (~e & g)) + K[i] + m[i]) | 0;
+        const t2 = (((a >>> 2 | a << 30) ^ (a >>> 13 | a << 19) ^ (a >>> 22 | a << 10)) +
+                    ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      [a, b, c, d, e, f, g, h].forEach((v, i) => { H[i] = (H[i] + v) | 0; });
+    }
+    return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+  }
+  const CLAVE_SESION = 'ip7-siemens-sesion';
+  let sesion = false;
+  try { sesion = localStorage.getItem(CLAVE_SESION) === CONFIG.acceso.hash; } catch (e) {}
+  const iconoCandado = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
 
   /* ----------------------------------------------------------------- tema */
   const iconos = { noche: '☀︎', dia: '☾' };
@@ -1413,14 +1641,16 @@ const ENVIOS = [
          <button class="flecha der" data-dir="1" aria-label="Foto siguiente">›</button>
          <div class="puntos">${p.fotos.map((_, i) => `<i class="${i === 0 ? 'on' : ''}"></i>`).join('')}</div>`
       : '';
-    const precios = (p.escalas && p.escalas.length)
-      ? `<div class="escalas">${p.escalas.map(e =>
-          `<span><i>${etiquetaEscala(e)}</i><b>${cop(e[2])}</b></span>`).join('')}</div>`
-      : `<div class="consultar">Cotización especial — la define tu ejecutivo de cuenta según cantidad y personalización.</div>`;
+    const precios = !sesion
+      ? `<button class="bloqueo acceder" type="button">${iconoCandado}<span><b>Precios para clientes</b><br>Inicia sesión para ver la escala y cotizar</span></button>`
+      : (p.escalas && p.escalas.length)
+        ? `<div class="escalas">${p.escalas.map(e =>
+            `<span><i>${etiquetaEscala(e)}</i><b>${cop(e[2])}</b></span>`).join('')}</div>`
+        : `<div class="consultar">Cotización especial — la define tu ejecutivo de cuenta según cantidad y personalización.</div>`;
 
     return `
     <article class="tarjeta" data-id="${p.id}">
-      <div class="galeria${p.vertical ? ' vertical' : ''}${p.sinMarco ? ' sin-marco' : ''}" data-indice="0">
+      <div class="galeria${p.vertical ? ' vertical' : ''}${p.formato === 'alto' ? ' alta' : ''}${p.sinMarco ? ' sin-marco' : ''}" data-indice="0">
         ${p.destacado ? '<span class="insignia">Destacado</span>' : ''}
         <div class="pista">${galeria}</div>
         ${flechas}
@@ -1433,7 +1663,8 @@ const ENVIOS = [
       </div>
       <div class="pie">
         <span class="min">Mín. ${min} und.</span>
-        <button class="btn btn-marca agregar">Agregar</button>
+        ${sesion ? '<button class="btn btn-marca agregar">Agregar</button>'
+                 : '<button class="btn btn-fantasma acceder" type="button">Acceder para cotizar</button>'}
       </div>
     </article>`;
   }
@@ -1458,6 +1689,7 @@ const ENVIOS = [
   $('#rejilla').addEventListener('click', e => {
     const flecha = e.target.closest('.flecha');
     if (flecha) { moverGaleria(flecha.closest('.galeria'), +flecha.dataset.dir); return; }
+    if (e.target.closest('.acceder')) { abrirAcceso(); return; }
     const btn = e.target.closest('.agregar');
     if (btn) {
       const id = btn.closest('.tarjeta').dataset.id;
@@ -1562,8 +1794,9 @@ const ENVIOS = [
     $('#panel-carrito').classList.toggle('abierto', v);
     $('#velo').classList.toggle('abierto', v);
   }
-  $('#btn-carrito').addEventListener('click', () => abrirCarrito(true));
-  $('#btn-carrito-movil').addEventListener('click', () => abrirCarrito(true));
+  const abrirCarritoSiHaySesion = () => sesion ? abrirCarrito(true) : abrirAcceso();
+  $('#btn-carrito').addEventListener('click', abrirCarritoSiHaySesion);
+  $('#btn-carrito-movil').addEventListener('click', abrirCarritoSiHaySesion);
   $('#cerrar-carrito').addEventListener('click', () => abrirCarrito(false));
   $('#velo').addEventListener('click', () => abrirCarrito(false));
 
@@ -1574,7 +1807,7 @@ const ENVIOS = [
   $('#lista-comerciales').innerHTML = conWhatsapp.length
     ? conWhatsapp.map((c, i) => `
         <button class="comercial" data-i="${i}">
-          <span class="av">${c.nombre.trim()[0]}</span>
+          <span class="av">${c.foto ? `<img src="${c.foto}" alt="">` : c.nombre.trim()[0]}</span>
           <span><span class="n">${c.nombre}</span><br><span class="c">${c.cargo}</span></span>
           <span class="wa">WhatsApp</span>
         </button>`).join('')
@@ -1692,7 +1925,57 @@ const ENVIOS = [
     brindis('Abriendo tu correo…');
   });
 
+  /* ------------------------------------------------- acceso: interfaz */
+  function abrirAcceso() {
+    $('#error-acceso').hidden = true;
+    abrirModal('#modal-acceso', true);
+    setTimeout(() => $('#a-usuario').focus(), 60);
+  }
+  function aplicarSesion() {
+    document.documentElement.classList.toggle('con-sesion', sesion);
+    $('#txt-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
+    $('#cajon-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
+  }
+  function alternarSesion() {
+    if (!sesion) { abrirAcceso(); return; }
+    sesion = false;
+    try { localStorage.removeItem(CLAVE_SESION); } catch (e) {}
+    abrirCarrito(false); abrirModal('#modal-cotizacion', false);
+    aplicarSesion(); pintar(); brindis('Sesión cerrada');
+  }
+  $('#btn-login').addEventListener('click', alternarSesion);
+  $('#cajon-login').addEventListener('click', () => { cerrarCajon(); alternarSesion(); });
+  $('#cerrar-acceso').addEventListener('click', () => abrirModal('#modal-acceso', false));
+  $('#modal-acceso').addEventListener('click', e => { if (e.target.id === 'modal-acceso') abrirModal('#modal-acceso', false); });
+  $('#pedir-acceso').addEventListener('click', () => abrirModal('#modal-acceso', false));
+  $('#form-acceso').addEventListener('submit', e => {
+    e.preventDefault();
+    const huella = sha256($('#a-usuario').value.trim().toLowerCase() + ':' + $('#a-clave').value);
+    if (huella !== CONFIG.acceso.hash) { $('#error-acceso').hidden = false; $('#a-clave').select(); return; }
+    sesion = true;
+    try { localStorage.setItem(CLAVE_SESION, huella); } catch (err) {}
+    $('#form-acceso').reset();
+    abrirModal('#modal-acceso', false);
+    aplicarSesion(); pintar(); brindis('Sesión iniciada · ya puedes ver precios y cotizar');
+  });
+
+  /* --------------------------------------------------- secciones nuevas */
+  $('#rejilla-alianzas').innerHTML = PROVEEDORES.map(n => `<div class="alianza">${n}</div>`).join('');
+  $('#catalogos-web').innerHTML = CATALOGOS_WEB.map(c => `
+    <a class="cat-web" href="${c.url}" target="_blank" rel="noopener">
+      <b>${c.nombre}</b><small>${c.detalle}</small><span class="ir">Abrir catálogo →</span>
+    </a>`).join('');
+  const iconoPdf = '<svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM7 13h10v1.6H7V13zm0 3.2h10v1.6H7v-1.6zM7 10h4v1.6H7V10z"/></svg>';
+  $('#catalogos-pdf').innerHTML = CATALOGOS_PDF.map((c, i) => `
+    <${c.url ? `a href="${c.url}" target="_blank" rel="noopener"` : 'button type="button" data-i="' + i + '"'} class="cat-pdf">
+      ${iconoPdf}<b>${c.nombre}</b><small>${c.peso}</small>${c.url ? '' : '<em>Pídelo a tu ejecutivo</em>'}
+    </${c.url ? 'a' : 'button'}>`).join('');
+  $('#catalogos-pdf').addEventListener('click', e => {
+    if (e.target.closest('button.cat-pdf')) abrirModal('#modal-asesor', true);
+  });
+
   /* --------------------------------------------------------- arranque */
+  aplicarSesion();
   pintar();
   refrescarCarrito();
 
@@ -1701,6 +1984,7 @@ const ENVIOS = [
     abrirCarrito(false);
     abrirModal('#modal-cotizacion', false);
     abrirModal('#modal-asesor', false);
+    abrirModal('#modal-acceso', false);
     cerrarMega(); cerrarCajon();
   });
 })();
