@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="noche">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catálogo SIEMENS · IP7 Imagen Perfecta Sie7e</title>
+<meta name="description" content="Catálogo corporativo personalizado para SIEMENS. Merchandising, tecnología, reconocimientos y textil con marca. Cotiza en línea con tu ejecutivo IP7.">
+<meta name="theme-color" content="#061a1d">
+<link rel="icon" href="img/logo-ip7-noche.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<div id="destello"></div>
+
+<!-- ================= HEADER ================= -->
+<header class="cabecera" id="cabecera">
+  <div class="contenedor fila">
+
+    <a class="marca" href="#inicio" aria-label="IP7 · Catálogo Siemens">
+      <img id="logo-img" src="img/logo-ip7-noche.png" alt="IP7 · Imagen Perfecta Sie7e">
+      <span class="separador" aria-hidden="true"></span>
+      <span class="cliente">
+        <img id="logo-cliente" alt="SIEMENS" hidden>
+        <span class="cliente-texto">SIEMENS</span>
+        <small>Catálogo exclusivo</small>
+      </span>
+    </a>
+
+    <nav class="menu" id="menu">
+      <div class="menu-item tiene-mega">
+        <button class="menu-enlace" id="btn-mega" aria-expanded="false" aria-controls="mega">
+          Catálogo <svg class="caret" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1l4 4 4-4"/></svg>
+        </button>
+
+        <div class="mega" id="mega" hidden>
+          <div class="mega-caja">
+            <div class="mega-rejilla" id="mega-rejilla"></div>
+            <div class="mega-pie">
+              <span>Precios vigentes hasta el <b class="vigencia"></b> · sin IVA · incluye 1 logo por producto</span>
+              <a href="#catalogo" data-cat="todas" class="mega-todo">Ver todo el catálogo →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a class="menu-enlace" href="#envios">Envíos</a>
+      <a class="menu-enlace" href="#contacto">Contacto</a>
+    </nav>
+
+    <div class="acciones">
+      <button class="btn btn-fantasma" id="btn-asesor">Hablar con un ejecutivo</button>
+      <button class="btn btn-fantasma chip-carrito" id="btn-carrito">
+        Seleccionados<span class="cuenta" id="cuenta-carrito">0</span>
+      </button>
+      <button class="btn btn-fantasma btn-icono" id="btn-tema" title="Cambiar modo día / noche" aria-label="Cambiar modo día / noche">
+        <span id="icono-tema">☀︎</span>
+      </button>
+      <button class="btn btn-fantasma btn-icono hamburguesa" id="btn-menu" aria-label="Abrir menú" aria-expanded="false">
+        <span class="rayas"></span>
+      </button>
+    </div>
+  </div>
+  <div class="progreso" id="progreso"></div>
+</header>
+
+<!-- menú móvil -->
+<div class="cajon" id="cajon" hidden>
+  <nav>
+    <a href="#catalogo" data-cat="todas">Todo el catálogo</a>
+    <div class="cajon-cats" id="cajon-cats"></div>
+    <a href="#envios">Valores de entrega</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</div>
+
+<!-- ================= ESCENA CINEMÁTICA ================= -->
+<section class="cinema" id="inicio" aria-label="Portafolio Siemens 2026">
+  <div class="escenario">
+    <div class="mundo">
+
+      <div class="fondo-escena" aria-hidden="true"></div>
+      <div class="velo-escena" aria-hidden="true"></div>
+
+      <div class="vitrina" id="vitrina" aria-hidden="true"></div>
+
+      <div class="portada">
+        <span class="etiqueta">Portafolio corporativo · Vigencia <span class="vigencia"></span></span>
+        <h1>La marca de Siemens, en <em>cada detalle</em> que entrega.</h1>
+        <p class="entrada">
+          Portafolio seleccionado por IP7 para Siemens: merchandising, tecnología,
+          reconocimientos y textil. Todos los productos incluyen
+          una marca. Precios sin IVA, vigentes hasta el <strong id="vigencia-hero"></strong>.
+        </p>
+        <div class="botones">
+          <a class="btn btn-marca" href="#catalogo" data-cat="todas">Ver el catálogo</a>
+          <button class="btn btn-fantasma" id="btn-asesor-hero">Hablar con un ejecutivo</button>
+        </div>
+        <span class="pista-scroll" aria-hidden="true">Desliza para recorrer el portafolio</span>
+      </div>
+
+      <article class="relato" id="relato-a">
+        <h2>Todo lleva tu marca.</h2>
+        <p>Cada referencia del portafolio incluye una técnica de marca. Sin costos ocultos
+           y con la cantidad mínima real a la vista en cada ficha.</p>
+        <dl class="cifras">
+          <div><dt id="dato-productos">0</dt><dd>productos vigentes</dd></div>
+          <div><dt id="dato-categorias">0</dt><dd>categorías</dd></div>
+          <div><dt>100%</dt><dd>con tu marca incluida</dd></div>
+        </dl>
+      </article>
+
+      <article class="relato" id="relato-b">
+        <h2>Precios por escala, sin sorpresas.</h2>
+        <p>Arma tu selección desde el catálogo y la solicitud sale armada, con cantidades
+           y valores por escala, dirigida al ejecutivo que elijas.</p>
+        <a class="btn btn-marca" href="#catalogo" data-cat="todas">Explorar el catálogo</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="aviso">
+  Todos los productos incluyen una marca · Precios sin IVA · No incluyen distribución fuera de Bogotá · Sujetos a inventario
+</div>
+
+<!-- ================= CATÁLOGO ================= -->
+<section class="seccion" id="catalogo">
+  <div class="contenedor">
+    <h2>Catálogo</h2>
+    <p class="sub">Busca por nombre o referencia, filtra por categoría y arma tu solicitud. Cada producto conserva la escala de precios y la cantidad mínima del catálogo.</p>
+
+    <div class="barra-filtros">
+      <div class="buscador">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="buscar" placeholder="Buscar producto o referencia (ej. morral, MU-112, paraguas)…" autocomplete="off">
+      </div>
+      <div class="categorias" id="categorias"></div>
+    </div>
+
+    <div class="rejilla-productos" id="rejilla"></div>
+    <div class="vacio oculto" id="vacio">No encontramos productos con ese criterio. Prueba con otra palabra o categoría.</div>
+  </div>
+</section>
+
+<!-- ================= ENVÍOS ================= -->
+<section class="seccion" id="envios">
+  <div class="contenedor">
+    <h2>Valores de entrega</h2>
+    <p class="sub">Valor por cada caja. Los precios del catálogo no incluyen distribución ni entregas fuera de Bogotá.</p>
+    <div class="tabla-envios" id="tabla-envios"></div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="seccion" id="contacto">
+  <div class="contenedor">
+    <div class="cta">
+      <h2>¿Necesitas algo que no está en el catálogo?</h2>
+      <p>Tu ejecutivo de confianza arma la propuesta a la medida: producción nacional, importación y técnicas de marca especiales.</p>
+      <button class="btn" id="btn-asesor-cta">Hablar con un ejecutivo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PIE ================= -->
+<footer class="pie-sitio">
+  <div class="contenedor fila">
+    <img id="logo-pie" src="img/logo-ip7-noche.png" alt="IP7 · Imagen Perfecta Sie7e">
+    <small>
+      <a href="mailto:carlossalinas@ip7.com.co">carlossalinas@ip7.com.co</a> ·
+      Calle 72A #63-12, Bogotá · <a href="https://www.ip7.com.co" target="_blank" rel="noopener">www.ip7.com.co</a>
+    </small>
+    <small>Catálogo SIEMENS · Precios vigentes hasta el <span class="vigencia"></span></small>
+  </div>
+  <div class="contenedor" style="margin-top:14px">
+    <a class="enlace-admin" href="admin.html">Editor de fotos</a>
+  </div>
+</footer>
+
+<!-- ================= BARRA MÓVIL ================= -->
+<div class="barra-movil">
+  <button class="btn btn-fantasma" id="btn-asesor-movil">Ejecutivo</button>
+  <button class="btn btn-marca" id="btn-carrito-movil">Seleccionados&nbsp;·&nbsp;<span id="cuenta-movil">0</span></button>
+</div>
+
+<!-- ================= PANEL CARRITO ================= -->
+<div class="velo" id="velo"></div>
+<aside class="panel-lateral" id="panel-carrito" aria-label="Productos seleccionados">
+  <header>
+    <h3>Productos seleccionados</h3>
+    <button class="quitar" id="cerrar-carrito" aria-label="Cerrar">✕</button>
+  </header>
+  <div class="lista" id="lista-carrito"></div>
+  <div class="pie">
+    <div class="total">
+      <span>Estimado</span>
+      <span id="total-carrito">$ 0<small>Sin IVA · referencia según escala</small></span>
+    </div>
+    <button class="btn btn-marca" id="btn-cotizar">Solicitar cotización</button>
+    <button class="btn btn-fantasma" id="btn-copiar">Copiar solicitud</button>
+  </div>
+</aside>
+
+<!-- ================= MODAL COTIZACIÓN ================= -->
+<div class="modal" id="modal-cotizacion">
+  <div class="caja">
+    <h3>Solicitud de cotización</h3>
+    <p class="sub">Se envía a tu ejecutivo con copia a <strong id="copia-correo"></strong>.</p>
+    <form id="form-cotizacion">
+      <div class="campo">
+        <label for="f-comercial">Dirigir la cotización a *</label>
+        <select id="f-comercial" required></select>
+        <div class="ayuda" id="ayuda-comercial"></div>
+      </div>
+      <div class="fila-2">
+        <div class="campo"><label for="f-nombre">Nombre y apellido *</label><input id="f-nombre" required></div>
+        <div class="campo"><label for="f-empresa">Empresa / área *</label><input id="f-empresa" value="SIEMENS" required></div>
+      </div>
+      <div class="fila-2">
+        <div class="campo"><label for="f-email">Correo *</label><input id="f-email" type="email" required></div>
+        <div class="campo"><label for="f-tel">Teléfono</label><input id="f-tel" type="tel"></div>
+      </div>
+      <div class="campo">
+        <label for="f-fecha">Fecha requerida de entrega</label>
+        <input id="f-fecha" type="date">
+      </div>
+      <div class="campo">
+        <label for="f-notas">Notas (técnica de marca, colores, tallas, destino…)</label>
+        <textarea id="f-notas"></textarea>
+      </div>
+      <div class="acciones-modal">
+        <button type="submit" class="btn btn-marca">Enviar por correo</button>
+        <button type="button" class="btn btn-fantasma" id="btn-copiar-modal">Copiar solicitud</button>
+        <button type="button" class="btn btn-fantasma" id="cerrar-cotizacion">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL EJECUTIVOS ================= -->
+<div class="modal" id="modal-asesor">
+  <div class="caja">
+    <h3>Hablar con un ejecutivo</h3>
+    <p class="sub">Elige con quién quieres hablar y abrimos WhatsApp con el mensaje listo.</p>
+    <div class="comerciales" id="lista-comerciales"></div>
+    <div class="acciones-modal">
+      <button class="btn btn-fantasma" id="cerrar-asesor">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div id="brindis"></div>
+
+<script src="js/datos.js"></script>
+<script src="js/app.js"></script>
+<script src="js/motion.js"></script>
+</body>
+</html>
