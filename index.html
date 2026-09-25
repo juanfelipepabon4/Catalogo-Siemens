@@ -10,7 +10,713 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilos.css">
+<style>
+/* ==========================================================================
+   IP7 · Catálogo SIEMENS
+   ========================================================================== */
+
+/* ---------- Tema noche (por defecto) ---------- */
+:root{
+  --marca:#12a3ab;
+  --marca-fuerte:#006268;
+  --fondo:#061a1d;
+  --fondo-2:#08252a;
+  --panel:#0c2f34;
+  --panel-2:#0f3a40;
+  --borde:rgba(255,255,255,.12);
+  --texto:#e9f4f4;
+  --texto-2:#9fbcbe;
+  --sombra:0 18px 44px rgba(0,0,0,.45);
+  --halo:transparent;
+  --tarjeta-foto:#ffffff;
+  --radio:16px;
+  --max:1240px;
+  --fuente:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --fuente-marca:'Archivo','IBM Plex Sans',sans-serif;
+  --siemens:#00c9c9;
+}
+/* ---------- Tema día ---------- */
+html[data-tema="dia"]{
+  --siemens:#009999;
+  --marca:#006268;
+  --marca-fuerte:#004a4f;
+  --fondo:#eef3f3;
+  --fondo-2:#ffffff;
+  --panel:#ffffff;
+  --panel-2:#f3f8f8;
+  --borde:rgba(0,60,64,.14);
+  --texto:#062226;
+  --texto-2:#4a6d70;
+  --sombra:0 14px 34px rgba(0,50,54,.12);
+  --halo:rgba(255,255,255,.72);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--fuente);background:var(--fondo);color:var(--texto);
+  -webkit-font-smoothing:antialiased;line-height:1.55;
+  transition:background .45s ease,color .45s ease;
+}
+img{max-width:100%;display:block}
+[hidden]{display:none !important}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+.contenedor{width:min(100% - 32px,var(--max));margin-inline:auto}
+.oculto{display:none !important}
+
+/* ---------- Destello "luces encendidas" ---------- */
+#destello{
+  position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:999;
+}
+#destello.encender{animation:flash .55s ease-out}
+@keyframes flash{0%{opacity:0}12%{opacity:.92}100%{opacity:0}}
+
+/* ---------- Header ---------- */
+.cabecera{
+  position:sticky;top:0;z-index:80;backdrop-filter:blur(16px);
+  background:color-mix(in srgb,var(--fondo) 88%,transparent);
+  border-bottom:1px solid var(--borde);
+  transition:box-shadow .3s ease,background .3s ease;
+}
+.cabecera.pegada{box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.cabecera .fila{display:flex;align-items:center;gap:26px;height:74px;transition:height .25s ease}
+.cabecera.pegada .fila{height:64px}
+
+/* barra de progreso de lectura */
+.progreso{height:2px;width:0;background:linear-gradient(90deg,var(--marca),var(--siemens));transition:width .12s linear}
+
+/* lockup IP7 × SIEMENS */
+.marca{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.marca > img{height:30px;width:auto}
+.marca .separador{width:1px;height:26px;background:var(--borde)}
+.marca .cliente{display:flex;flex-direction:column;line-height:1}
+.marca .cliente img{height:19px;width:auto}
+.marca .cliente-texto{
+  font-family:var(--fuente-marca);font-weight:700;font-size:18px;letter-spacing:.005em;
+  color:var(--siemens);
+}
+.marca .cliente small{
+  font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-2);
+  font-weight:500;margin-top:4px;
+}
+
+/* navegación */
+.menu{display:flex;align-items:center;gap:4px;margin-left:auto}
+.menu-item{position:relative}
+.menu-enlace{
+  white-space:nowrap;display:inline-flex;align-items:center;gap:6px;background:none;border:0;cursor:pointer;
+  font-size:14px;font-weight:500;color:var(--texto-2);padding:9px 13px;border-radius:9px;
+  transition:color .2s,background .2s;
+}
+.menu-enlace:hover,.menu-enlace[aria-expanded="true"]{color:var(--texto);background:var(--panel-2)}
+.menu-enlace .caret{transition:transform .22s ease;opacity:.7}
+.menu-enlace[aria-expanded="true"] .caret{transform:rotate(180deg)}
+
+/* mega menú */
+.mega{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);width:min(900px,92vw);z-index:90}
+.mega::before{content:'';position:absolute;top:-14px;left:0;right:0;height:14px}
+.mega-caja{
+  background:var(--fondo-2);border:1px solid var(--borde);border-radius:18px;
+  box-shadow:0 26px 60px rgba(0,0,0,.3);overflow:hidden;
+  animation:bajar .2s ease;
+}
+@keyframes bajar{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mega-rejilla{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:16px}
+.mega-cat{
+  display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;
+  background:none;border:1px solid transparent;cursor:pointer;text-align:left;width:100%;
+  transition:background .18s,border-color .18s;
+}
+.mega-cat:hover{background:var(--panel-2);border-color:var(--borde)}
+.mega-cat img{width:38px;height:38px;object-fit:contain;background:#fff;border-radius:8px;padding:3px;flex:0 0 auto}
+.mega-cat .mn{font-size:13px;font-weight:600;line-height:1.25;color:var(--texto)}
+.mega-cat .mc{font-size:11px;color:var(--texto-2)}
+.mega-pie{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:13px 20px;border-top:1px solid var(--borde);background:var(--panel-2);
+  font-size:11.5px;color:var(--texto-2);
+}
+.mega-todo{font-size:13px;font-weight:600;color:var(--marca);white-space:nowrap}
+
+/* acciones */
+.acciones{display:flex;align-items:center;gap:9px}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:1px solid var(--borde);background:var(--panel);color:var(--texto);
+  padding:10px 18px;border-radius:10px;font-weight:600;font-size:13.5px;
+  cursor:pointer;white-space:nowrap;transition:transform .18s,background .25s,border-color .25s,box-shadow .25s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-marca{background:var(--marca);border-color:transparent;color:#fff}
+.btn-marca:hover{box-shadow:0 10px 24px color-mix(in srgb,var(--marca) 42%,transparent)}
+.btn-fantasma{background:transparent}
+.btn-icono{width:40px;height:40px;padding:0;border-radius:10px}
+.chip-carrito{gap:9px}
+.chip-carrito .cuenta{
+  min-width:20px;height:20px;padding:0 6px;border-radius:6px;background:var(--marca);color:#fff;
+  font-size:11px;font-weight:700;display:grid;place-items:center;
+}
+
+/* hamburguesa */
+.hamburguesa{display:none}
+.hamburguesa .rayas,.hamburguesa .rayas::before,.hamburguesa .rayas::after{
+  display:block;width:16px;height:1.8px;background:currentColor;border-radius:2px;transition:.22s;
+}
+.hamburguesa .rayas{position:relative}
+.hamburguesa .rayas::before,.hamburguesa .rayas::after{content:'';position:absolute;left:0}
+.hamburguesa .rayas::before{top:-5px}
+.hamburguesa .rayas::after{top:5px}
+.hamburguesa[aria-expanded="true"] .rayas{background:transparent}
+.hamburguesa[aria-expanded="true"] .rayas::before{top:0;transform:rotate(45deg)}
+.hamburguesa[aria-expanded="true"] .rayas::after{top:0;transform:rotate(-45deg)}
+
+/* cajón móvil */
+.cajon{
+  position:fixed;top:64px;left:0;right:0;bottom:0;z-index:79;overflow-y:auto;
+  background:var(--fondo);border-top:1px solid var(--borde);padding:16px;
+  animation:bajar .22s ease;
+}
+.cajon nav{display:flex;flex-direction:column;gap:4px}
+.cajon nav > a{
+  padding:12px 14px;border-radius:11px;font-size:14.5px;font-weight:600;
+  border:1px solid var(--borde);background:var(--panel);
+}
+.cajon-cats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0}
+.cajon-cats button{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:11px 14px;border-radius:11px;
+  border:1px solid var(--borde);background:var(--panel-2);color:var(--texto);
+  font-size:13.5px;font-weight:500;text-align:left;cursor:pointer;
+}
+.cajon-cats button span{font-size:11.5px;font-weight:400;color:var(--texto-2);white-space:nowrap}
+
+/* ---------- Escena cinemática ---------- */
+:root{
+  --mx:0; --my:0;
+  --fondo-escala:1.08; --fondo-blur:0px; --fondo-brillo:1;
+  --velo-alpha:0;
+  --portada-y:0px; --portada-op:1; --portada-escala:1;
+  --muro-abre:0; --muro-op:1; --muro-blur:0px;
+  --relatoA-op:0; --relatoA-y:36px;
+  --relatoB-op:0; --relatoB-y:36px;
+  --sangria:max(24px,calc((100vw - var(--max)) / 2));
+  --alto-cab:74px;
+  --hero-img:url('img/hero-noche.jpg');
+}
+html[data-tema="dia"]{--hero-img:url('img/hero-dia.jpg')}
+
+/* el escenario arranca bajo la cabecera para ocupar la pantalla completa */
+.cinema{position:relative;height:calc(100vh + 1550px);margin-top:calc(-1 * var(--alto-cab))}
+.escenario{
+  position:sticky;top:0;height:100vh;min-height:600px;overflow:hidden;isolation:isolate;
+  background:var(--fondo);
+}
+.mundo{position:absolute;inset:0;overflow:hidden}
+
+.fondo-escena{
+  position:absolute;inset:0;z-index:0;
+  background-image:var(--hero-img);background-size:cover;background-position:center;
+  transform:translate3d(calc(var(--mx) * -18px),calc(var(--my) * -10px),0) scale(var(--fondo-escala));
+  filter:blur(var(--fondo-blur)) brightness(var(--fondo-brillo));
+  will-change:transform,filter;
+}
+.velo-escena{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(105deg,
+    color-mix(in srgb,var(--fondo) 94%,transparent) 0%,
+    color-mix(in srgb,var(--fondo) 62%,transparent) 54%,
+    color-mix(in srgb,var(--fondo) 26%,transparent) 100%),
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--fondo) 0%,transparent) 0%,
+      color-mix(in srgb,var(--fondo) calc(var(--velo-alpha) * 100%),transparent) 100%);
+}
+
+/* --- muro de producto que se abre ---
+   Cuadrícula uniforme 2 × 3: cada foto llena su recuadro (cover), así ninguna
+   queda desacomodada ni con márgenes blancos, sea cual sea su proporción. */
+.vitrina{
+  position:absolute;z-index:2;inset:0;
+  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);
+  gap:16px;
+  padding:calc(74px + 5vh) 6vw 7vh 52%;
+  pointer-events:none;
+  opacity:var(--muro-op);
+}
+.vitrina figure{
+  margin:0;border-radius:16px;overflow:hidden;min-height:0;
+  background:var(--panel);border:1px solid var(--borde);
+  transform:
+    translate3d(calc(var(--fx) * var(--muro-abre) + var(--mx) * var(--par) * 1px),
+                calc(var(--fy) * var(--muro-abre) + var(--my) * var(--par) * 1px), 0)
+    scale(calc(1 + var(--muro-abre) * var(--fs)));
+  filter:blur(var(--muro-blur));
+  box-shadow:0 22px 46px rgba(0,0,0,.30);
+  will-change:transform,filter;
+}
+html:not([data-tema="dia"]) .vitrina figure{
+  box-shadow:0 0 0 1px rgba(255,255,255,.07),0 22px 46px rgba(0,0,0,.5);
+}
+.vitrina figure img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* --- portada --- */
+.portada{
+  position:absolute;z-index:4;left:0;top:50%;
+  width:min(46vw,620px);padding-left:var(--sangria);
+  transform:translate3d(0,calc(-50% + var(--portada-y)),0) scale(var(--portada-escala));
+  opacity:var(--portada-op);will-change:transform,opacity;
+}
+.portada .etiqueta{
+  display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--marca);
+  background:color-mix(in srgb,var(--marca) 14%,transparent);
+  border:1px solid color-mix(in srgb,var(--marca) 34%,transparent);
+  padding:7px 15px;border-radius:999px;
+}
+.portada h1{
+  font-size:clamp(2rem,3.9vw,3.3rem);line-height:1.1;margin:20px 0 16px;
+  font-weight:600;letter-spacing:-.018em;text-shadow:0 2px 30px var(--halo),0 0 60px var(--halo);
+}
+.portada h1 em{font-style:normal;color:var(--marca)}
+.portada .entrada{
+  font-size:1.02rem;color:var(--texto-2);max-width:50ch;margin:0 0 26px;
+  text-shadow:0 0 22px var(--halo);
+}
+.portada .botones{display:flex;flex-wrap:wrap;gap:12px}
+.pista-scroll{
+  display:inline-flex;align-items:center;gap:9px;margin-top:34px;
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--texto-2);
+}
+.pista-scroll::before{
+  content:'';width:34px;height:1px;background:currentColor;
+  animation:latir 2.4s ease-in-out infinite;transform-origin:left;
+}
+@keyframes latir{0%,100%{transform:scaleX(.35);opacity:.5}50%{transform:scaleX(1);opacity:1}}
+
+/* --- paneles de relato --- */
+.relato{
+  position:absolute;z-index:5;left:50%;top:50%;
+  width:min(660px,calc(100vw - 44px));text-align:center;pointer-events:none;
+  will-change:transform,opacity;
+}
+.relato::before{
+  content:'';position:absolute;inset:-34% -28%;z-index:-1;pointer-events:none;
+  background:radial-gradient(58% 58% at 50% 50%,
+    var(--fondo) 0%,
+    var(--fondo) 34%,
+    color-mix(in srgb,var(--fondo) 76%,transparent) 54%,
+    color-mix(in srgb,var(--fondo) 34%,transparent) 70%,
+    transparent 82%);
+}
+.relato h2{
+  margin:0;font-size:clamp(1.7rem,3.4vw,2.7rem);font-weight:600;letter-spacing:-.02em;
+  text-shadow:0 12px 34px rgba(0,0,0,.4),0 0 40px var(--halo);
+}
+.relato p{
+  width:min(500px,100%);margin:20px auto 0;font-size:1.02rem;
+  color:color-mix(in srgb,var(--texto) 84%,transparent);
+  text-shadow:0 0 22px var(--halo);
+}
+.relato .btn{pointer-events:auto;margin-top:26px}
+.cifras{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;
+  width:min(520px,100%);margin:38px auto 0;
+}
+.cifras dt{font-size:clamp(1.9rem,3.4vw,2.7rem);font-weight:700;line-height:1;color:var(--marca)}
+.cifras dd{margin:9px 0 0;font-size:12px;letter-spacing:.06em;
+  color:color-mix(in srgb,var(--texto) 84%,transparent)}
+#relato-a{opacity:var(--relatoA-op);transform:translate3d(-50%,calc(-50% + var(--relatoA-y)),0)}
+#relato-b{opacity:var(--relatoB-op);transform:translate3d(-50%,calc(-50% + var(--relatoB-y)),0)}
+
+/* ---------- Barra de aviso ---------- */
+.aviso{
+  background:var(--marca-fuerte);color:#fff;font-size:13px;font-weight:600;
+  padding:11px 0;text-align:center;letter-spacing:.02em;
+}
+html[data-tema="dia"] .aviso{background:var(--marca-fuerte)}
+
+/* ---------- Catálogo ---------- */
+.seccion{padding:64px 0}
+.seccion h2{font-size:clamp(1.5rem,2.6vw,2.05rem);font-weight:600;margin:0 0 8px;letter-spacing:-.015em}
+.seccion .sub{color:var(--texto-2);margin:0 0 28px;max-width:64ch}
+
+.barra-filtros{
+  position:sticky;top:70px;z-index:60;padding:14px 0;
+  background:color-mix(in srgb,var(--fondo) 92%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--borde);margin-bottom:26px;
+}
+.buscador{position:relative;margin-bottom:12px}
+.buscador input{
+  width:100%;padding:13px 16px 13px 44px;border-radius:999px;
+  border:1px solid var(--borde);background:var(--panel);outline:none;
+}
+.buscador input:focus{border-color:var(--marca)}
+.buscador svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.55}
+.categorias{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.categorias button{
+  white-space:nowrap;padding:8px 16px;border-radius:999px;border:1px solid var(--borde);
+  background:transparent;color:var(--texto-2);font-size:13.5px;font-weight:700;cursor:pointer;
+  transition:.2s;
+}
+.categorias button:hover{color:var(--texto)}
+.categorias button.activa{background:var(--marca);border-color:transparent;color:#fff}
+
+.rejilla-productos{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:22px;
+}
+.tarjeta{
+  background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);
+  overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .28s ease,box-shadow .28s ease,border-color .28s,opacity .5s ease;
+}
+/* aparición escalonada al entrar en pantalla */
+@media (prefers-reduced-motion:no-preference){
+  html.revelar .tarjeta{opacity:0;transform:translateY(16px)}
+  html.revelar .tarjeta.a-la-vista{opacity:1;transform:none}
+}
+.tarjeta:hover{transform:translateY(-5px);box-shadow:var(--sombra);border-color:color-mix(in srgb,var(--marca) 40%,transparent)}
+.galeria{position:relative;background:var(--tarjeta-foto);aspect-ratio:4/3;overflow:hidden}
+/* variante para productos altos (morrales, bolsos, tulas de pie): evita
+   el margen blanco excesivo que deja una caja horizontal 4:3 */
+.galeria.vertical{aspect-ratio:3/4}
+.galeria .pista{display:flex;height:100%;transition:transform .35s ease}
+.galeria .pista img{min-width:100%;height:100%;object-fit:contain;padding:10px;background:#fff}
+/* fotos ya ajustadas exactas a la caja (ambientadas, no de fondo blanco):
+   sin ese margen de 10px se vería un marco blanco contrastando con la foto */
+.galeria.sin-marco .pista img{padding:0}
+/* trofeos: caja un poco más alargada (4:5). Con cover, una foto 4:3 se recorta al centro
+   sin deformarse; las fotos nuevas ya en 4:5 encajan exactas. */
+.galeria.alta{aspect-ratio:4/5}
+.galeria.alta .pista img{object-fit:cover}
+.galeria .flecha{
+  position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;
+  border:none;background:rgba(6,26,29,.62);color:#fff;cursor:pointer;display:grid;place-items:center;
+  opacity:0;transition:opacity .2s;font-size:16px;line-height:1;
+}
+.galeria:hover .flecha{opacity:1}
+.galeria .flecha.izq{left:8px}
+.galeria .flecha.der{right:8px}
+.galeria .puntos{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px}
+.galeria .puntos i{width:6px;height:6px;border-radius:50%;background:rgba(6,26,29,.28)}
+.galeria .puntos i.on{background:var(--marca-fuerte);width:16px;border-radius:3px}
+.insignia{
+  position:absolute;top:10px;left:10px;background:var(--marca);color:#fff;font-size:10.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px;z-index:2;
+}
+
+.tarjeta .cuerpo{padding:16px 16px 0;flex:1}
+.tarjeta .ref{font-size:11px;letter-spacing:.14em;color:var(--marca);font-weight:600;text-transform:uppercase}
+.tarjeta h3{margin:5px 0 8px;font-size:15.5px;font-weight:600;line-height:1.3;letter-spacing:-.005em}
+.tarjeta .desc{
+  font-size:12.8px;color:var(--texto-2);margin:0 0 12px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.escalas{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.escalas span{
+  display:flex;justify-content:space-between;gap:10px;font-size:12.5px;
+  background:var(--panel-2);border:1px solid var(--borde);border-radius:8px;padding:5px 10px;
+}
+.escalas span b{font-weight:600;color:var(--texto)}
+.escalas span i{font-style:normal;color:var(--texto-2)}
+.consultar{
+  font-size:12.5px;background:var(--panel-2);border:1px dashed var(--borde);border-radius:8px;
+  padding:9px 11px;color:var(--texto-2);margin-bottom:12px;
+}
+.tarjeta .pie{padding:0 16px 16px;display:flex;gap:8px;align-items:center}
+.tarjeta .pie .min{font-size:11.5px;color:var(--texto-2);white-space:nowrap}
+.tarjeta .pie .btn{flex:1;padding:9px 12px;font-size:13px}
+
+.vacio{padding:60px 0;text-align:center;color:var(--texto-2)}
+
+/* ---------- Panel carrito ---------- */
+.velo{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.3s;z-index:90}
+.velo.abierto{opacity:1;pointer-events:auto}
+.panel-lateral{
+  position:fixed;top:0;right:0;height:100dvh;width:min(440px,100%);z-index:95;
+  background:var(--fondo-2);border-left:1px solid var(--borde);
+  transform:translateX(100%);transition:transform .34s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+.panel-lateral.abierto{transform:none}
+.panel-lateral header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--borde);
+}
+.panel-lateral header h3{margin:0;font-size:16px;font-weight:700}
+.panel-lateral .lista{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.linea{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center}
+.linea img{width:64px;height:64px;object-fit:contain;background:#fff;border-radius:10px;padding:4px}
+.linea .t{font-size:13.5px;font-weight:700;line-height:1.3}
+.linea .r{font-size:11px;color:var(--texto-2)}
+.linea .p{font-size:12.5px;color:var(--marca);font-weight:600;margin-top:2px}
+.cant{display:flex;align-items:center;gap:6px;margin-top:6px}
+.cant button{width:24px;height:24px;border-radius:6px;border:1px solid var(--borde);background:var(--panel);cursor:pointer}
+.cant input{width:58px;text-align:center;padding:4px;border-radius:6px;border:1px solid var(--borde);background:var(--panel)}
+.quitar{background:none;border:none;color:var(--texto-2);cursor:pointer;font-size:18px;line-height:1}
+.panel-lateral .pie{padding:16px 20px;border-top:1px solid var(--borde);display:flex;flex-direction:column;gap:10px}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:15px}
+.total small{font-weight:600;color:var(--texto-2);font-size:11.5px;display:block}
+
+/* ---------- Formularios / modal ---------- */
+.modal{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;
+  background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.25s;
+}
+.modal.abierto{opacity:1;pointer-events:auto}
+.modal .caja{
+  background:var(--fondo-2);border:1px solid var(--borde);border-radius:20px;
+  width:min(560px,100%);max-height:90dvh;overflow-y:auto;padding:26px;box-shadow:var(--sombra);
+}
+.modal h3{margin:0 0 4px;font-size:19px;font-weight:700}
+.modal .sub{color:var(--texto-2);font-size:13.5px;margin:0 0 18px}
+.campo{margin-bottom:14px}
+.campo label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px}
+.campo input,.campo select,.campo textarea{
+  width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--borde);
+  background:var(--panel);outline:none;
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--marca)}
+.campo textarea{min-height:84px;resize:vertical}
+.campo .ayuda{font-size:11.5px;color:var(--texto-2);margin-top:5px}
+.fila-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.acciones-modal{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.acciones-modal .btn{flex:1 1 auto;min-width:132px}
+
+/* lista de comerciales (WhatsApp) */
+.comerciales{display:flex;flex-direction:column;gap:10px}
+.comercial{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
+  border:1px solid var(--borde);background:var(--panel);cursor:pointer;transition:.2s;text-align:left;width:100%;
+}
+.comercial:hover{border-color:var(--marca);transform:translateX(3px)}
+.comercial .av{
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:color-mix(in srgb,var(--marca) 18%,transparent);color:var(--marca);font-weight:700;
+}
+.comercial .n{font-weight:600;font-size:14px}
+.comercial .c{font-size:11.5px;color:var(--texto-2)}
+.comercial .wa{margin-left:auto;color:#25d366;font-weight:600;font-size:12px}
+.sin-datos{font-size:13px;color:var(--texto-2);padding:14px;border:1px dashed var(--borde);border-radius:12px}
+
+/* ---------- CTA final + envíos ---------- */
+.cta{
+  background:linear-gradient(120deg,var(--marca-fuerte),color-mix(in srgb,var(--marca) 70%,#000));
+  color:#fff;border-radius:24px;padding:46px;text-align:center;margin:20px 0 0;
+}
+.cta h2{margin:0 0 10px;font-size:clamp(1.4rem,2.6vw,1.9rem);font-weight:600;letter-spacing:-.012em}
+.cta p{margin:0 auto 24px;max-width:56ch;opacity:.86}
+.cta .btn{background:#fff;color:var(--marca-fuerte);border-color:transparent}
+
+.tabla-envios{display:grid;gap:10px;margin-top:26px}
+.tabla-envios div{
+  display:flex;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:var(--panel);border:1px solid var(--borde);border-radius:12px;font-size:13.5px;
+}
+.tabla-envios div b{color:var(--marca)}
+
+/* ---------- Pie ---------- */
+.pie-sitio{border-top:1px solid var(--borde);padding:34px 0;margin-top:60px}
+.pie-sitio .fila{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.pie-sitio img{height:28px}
+.pie-sitio a{color:var(--marca);font-weight:700}
+.pie-sitio small{color:var(--texto-2);font-size:12px}
+.enlace-admin{font-size:11px;color:var(--texto-2);opacity:.5}
+.enlace-admin:hover{opacity:1}
+
+/* ---------- Barra móvil ---------- */
+.barra-movil{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;gap:10px;padding:10px 14px;
+  background:color-mix(in srgb,var(--fondo) 94%,transparent);
+  border-top:1px solid var(--borde);backdrop-filter:blur(12px);
+}
+.barra-movil .btn{flex:1}
+
+/* ---------- Aviso flotante ---------- */
+#brindis{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:120;
+  background:var(--marca);color:#fff;padding:12px 20px;border-radius:999px;font-size:13.5px;
+  font-weight:700;box-shadow:var(--sombra);opacity:0;pointer-events:none;transition:.3s;
+}
+#brindis.ver{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1280px){
+  .acciones #btn-asesor{display:none}
+}
+@media (max-width:1180px){
+  .menu{display:none}
+  .hamburguesa{display:grid;place-items:center}
+  .acciones{margin-left:auto}
+}
+@media (max-width:960px){
+  .cinema{height:calc(100vh + 1330px)}
+  .vitrina{padding:calc(74px + 4vh) 5vw 8vh 44%;gap:12px}
+  .portada{width:min(56vw,560px)}
+  .menu{display:none}
+  .hamburguesa{display:grid;place-items:center}
+  .acciones{margin-left:auto}
+}
+@media (max-width:720px){
+  :root{--alto-cab:62px}
+  .cabecera .fila{height:62px}
+  .cabecera.pegada .fila{height:58px}
+  .marca > img{height:26px}
+  .marca .cliente-texto{font-size:15px}
+  .marca .cliente small{display:none}
+  .cajon{top:62px}
+  .cinema{height:calc(100vh + 1020px)}
+  .escenario{min-height:560px}
+  /* el muro pasa a ser una franja inferior para no chocar con el texto */
+  .vitrina{
+    inset:auto 0 0 0;height:34vh;padding:0 16px 88px;
+    grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:8px;
+    align-content:stretch;
+  }
+  .vitrina figure{border-radius:11px}
+  .portada{
+    width:calc(100vw - 32px);left:16px;padding-left:0;top:33%;
+  }
+  .portada .etiqueta{display:none}
+  .portada h1{font-size:1.72rem;margin:0 0 12px}
+  .portada .entrada{font-size:.92rem;line-height:1.45;margin-bottom:18px}
+  .portada .botones{gap:8px}
+  .portada .botones .btn{padding:9px 15px;font-size:13px}
+  .pista-scroll{margin-top:18px;font-size:10px}
+  .cifras{grid-template-columns:repeat(3,1fr);gap:14px}
+  .relato p{font-size:.95rem}
+  .relato h2{font-size:1.72rem}
+  .cifras dt{font-size:1.7rem}
+  .cifras dd{font-size:10.5px}
+  .seccion{padding:44px 0}
+  .barra-filtros{top:62px}
+  .cajon-cats{grid-template-columns:1fr}
+  .barra-movil{display:flex}
+  body{padding-bottom:64px}
+  .cabecera #btn-asesor,.cabecera #btn-carrito{display:none}
+  .portada .etiqueta{font-size:10px;letter-spacing:.12em}
+  :root{--sangria:16px}
+  .cta{padding:32px 22px}
+  .rejilla-productos{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+  .tarjeta .cuerpo{padding:12px 12px 0}
+  .tarjeta .pie{padding:0 12px 12px;flex-direction:column;align-items:stretch}
+  .fila-2{grid-template-columns:1fr}
+  .galeria .flecha{opacity:1;width:28px;height:28px}
+}
+
+/* ---------- Acceso (login) ---------- */
+.btn-acceso{gap:7px}
+html:not(.con-sesion) .btn-acceso{border-color:color-mix(in srgb,var(--marca) 55%,transparent);color:var(--marca)}
+.bloqueo{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:12px 13px;border-radius:11px;
+  border:1px dashed color-mix(in srgb,var(--marca) 55%,transparent);
+  background:color-mix(in srgb,var(--marca) 8%,transparent);
+  color:var(--texto-2);font-size:12.5px;line-height:1.35;text-align:left;cursor:pointer;width:100%;
+  transition:background .2s,border-color .2s;
+}
+.bloqueo:hover{background:color-mix(in srgb,var(--marca) 16%,transparent);border-color:var(--marca)}
+.bloqueo svg{flex:0 0 auto;color:var(--marca)}
+.bloqueo b{color:var(--texto);font-weight:600}
+.caja-acceso{max-width:420px}
+.error-acceso{margin:-4px 0 12px;padding:9px 12px;border-radius:9px;font-size:13px;
+  background:color-mix(in srgb,#e5484d 14%,transparent);color:#ff8a8e;border:1px solid color-mix(in srgb,#e5484d 40%,transparent)}
+html[data-tema="dia"] .error-acceso{color:#b4232a}
+.ayuda-acceso{margin:14px 0 0;font-size:12.5px;color:var(--texto-2)}
+.ayuda-acceso a{color:var(--marca);font-weight:600}
+.cajon nav > button.cajon-acceso{
+  padding:12px 14px;border-radius:11px;font-size:14.5px;font-weight:600;text-align:left;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--marca) 55%,transparent);background:transparent;color:var(--marca);
+}
+
+/* ---------- Encabezados centrados de sección ---------- */
+.encabezado-centro{text-align:center;margin:0 auto 34px;max-width:64ch}
+.encabezado-centro .sub{margin-inline:auto}
+.ojo{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--marca);margin-bottom:10px}
+
+/* ---------- Proveedores premium (7 × 2) ---------- */
+.rejilla-alianzas{display:grid;grid-template-columns:repeat(7,1fr);gap:16px}
+.alianza{
+  display:grid;place-items:center;text-align:center;min-height:86px;padding:14px 12px;
+  background:var(--panel);border:1px solid var(--borde);border-radius:20px;
+  font-weight:700;font-size:15px;letter-spacing:-.005em;color:var(--texto);
+  transition:transform .22s,border-color .22s,box-shadow .22s;
+}
+.alianza:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--marca) 50%,transparent);box-shadow:var(--sombra)}
+html[data-tema="dia"] .alianza{background:#fff}
+
+/* ---------- Más catálogos ---------- */
+.bloque-catalogos{
+  padding:56px clamp(18px,4vw,44px) 48px;border-radius:28px;color:#fff;
+  background:linear-gradient(160deg,#0a7078 0%,#00575d 45%,#063a3f 100%);
+  border:1px solid rgba(255,255,255,.14);
+}
+.bloque-catalogos .ojo{color:rgba(255,255,255,.75)}
+.bloque-catalogos h2{color:#fff}
+.bloque-catalogos .sub{color:rgba(255,255,255,.78)}
+.catalogos-web{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:46px}
+.cat-web{
+  display:flex;flex-direction:column;gap:4px;padding:20px 22px;border-radius:18px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;
+  transition:transform .22s,background .22s;
+}
+.cat-web:hover{transform:translateY(-3px);background:rgba(255,255,255,.18)}
+.cat-web b{font-size:16px;font-weight:600}
+.cat-web small{font-size:12.5px;color:rgba(255,255,255,.7)}
+.cat-web .ir{margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.subtitulo-bloque{text-align:center;margin-bottom:24px}
+.subtitulo-bloque span{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.subtitulo-bloque h3{margin:8px 0 0;font-size:clamp(1.3rem,2.4vw,1.8rem);font-weight:600;color:#fff}
+.catalogos-pdf{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat-pdf{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
+  min-height:160px;padding:22px 14px;border-radius:20px;background:#fff;color:#062226;cursor:pointer;
+  border:0;font:inherit;transition:transform .22s,box-shadow .22s;
+}
+.cat-pdf:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.cat-pdf svg{color:#b7c9ca;margin-bottom:6px}
+.cat-pdf b{font-size:15px;font-weight:700;line-height:1.25}
+.cat-pdf small{font-size:12.5px;color:#5f7e81}
+.cat-pdf em{font-style:normal;font-size:11px;font-weight:600;color:var(--marca-fuerte)}
+.catalogos-pdf .cat-pdf:nth-child(n+6){grid-column:auto}
+
+/* ---------- Responsive de las secciones nuevas ---------- */
+@media (max-width:1100px){
+  .rejilla-alianzas{grid-template-columns:repeat(4,1fr)}
+  .catalogos-pdf{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:720px){
+  .rejilla-alianzas{grid-template-columns:repeat(2,1fr);gap:10px}
+  .alianza{min-height:64px;font-size:14px;border-radius:16px}
+  .catalogos-web{grid-template-columns:1fr}
+  .catalogos-pdf{grid-template-columns:repeat(2,1fr);gap:10px}
+  .cat-pdf{min-height:140px;padding:16px 10px}
+  .bloque-catalogos{padding:38px 16px 32px;border-radius:22px}
+  .cabecera #btn-login{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .pista-scroll::before{animation:none;transform:none}
+  .vitrina figure,.fondo-escena,.portada,.relato{
+    transition:none !important;
+  }
+}
+.comercial .av{overflow:hidden}
+.comercial .av img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- Condiciones de precio ---------- */
+.caja-condiciones{position:relative;max-width:480px;padding:34px 32px 30px}
+.caja-condiciones h3{font-size:1.7rem;margin:4px 0 20px;letter-spacing:-.02em}
+.cerrar-x{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:50%;cursor:pointer;
+  border:1px solid var(--borde);background:var(--panel-2);color:var(--texto);font-size:15px}
+.cerrar-x:hover{border-color:var(--marca)}
+.condiciones{margin:0 0 24px;padding:0 0 0 20px;display:grid;gap:14px;color:var(--texto-2);font-size:15px;line-height:1.5}
+.condiciones li::marker{color:var(--marca)}
+.condiciones b{color:var(--texto);font-weight:700}
+.btn.ancho{width:100%;padding:14px 18px;font-size:15px;border-radius:999px}
+.ver-condiciones{background:none;border:0;padding:0;font:inherit;font-weight:700;color:#fff;text-decoration:underline;cursor:pointer}
+.nota-sim{margin:-6px 0 12px;font-size:11px;color:var(--texto-2);letter-spacing:.02em}
+
+</style>
 </head>
 <body>
 <div id="destello"></div>
@@ -46,12 +752,17 @@
         </div>
       </div>
 
+      <a class="menu-enlace" href="#catalogos">Más catálogos</a>
       <a class="menu-enlace" href="#envios">Envíos</a>
       <a class="menu-enlace" href="#contacto">Contacto</a>
     </nav>
 
     <div class="acciones">
       <button class="btn btn-fantasma" id="btn-asesor">Hablar con un ejecutivo</button>
+      <button class="btn btn-fantasma btn-acceso" id="btn-login">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span id="txt-login">Acceder</span>
+      </button>
       <button class="btn btn-fantasma chip-carrito" id="btn-carrito">
         Seleccionados<span class="cuenta" id="cuenta-carrito">0</span>
       </button>
@@ -71,8 +782,11 @@
   <nav>
     <a href="#catalogo" data-cat="todas">Todo el catálogo</a>
     <div class="cajon-cats" id="cajon-cats"></div>
+    <a href="#alianzas">Alianzas</a>
+    <a href="#catalogos">Más catálogos</a>
     <a href="#envios">Valores de entrega</a>
     <a href="#contacto">Contacto</a>
+    <button class="cajon-acceso" id="cajon-login">Acceder</button>
   </nav>
 </div>
 
@@ -92,7 +806,7 @@
         <p class="entrada">
           Portafolio seleccionado por IP7 para Siemens: merchandising, tecnología,
           reconocimientos y textil. Todos los productos incluyen
-          una marca. Precios sin IVA, vigentes hasta el <strong id="vigencia-hero"></strong>.
+          una marca. Valores de referencia sin IVA, vigentes hasta el <strong id="vigencia-hero"></strong>.
         </p>
         <div class="botones">
           <a class="btn btn-marca" href="#catalogo" data-cat="todas">Ver el catálogo</a>
@@ -113,9 +827,9 @@
       </article>
 
       <article class="relato" id="relato-b">
-        <h2>Precios por escala, sin sorpresas.</h2>
-        <p>Arma tu selección desde el catálogo y la solicitud sale armada, con cantidades
-           y valores por escala, dirigida al ejecutivo que elijas.</p>
+        <h2>Precios de referencia por escala.</h2>
+        <p>Arma tu selección y la solicitud sale armada con cantidades y valores por escala.
+           Los valores son simulados: tu ejecutivo asignado envía la cotización final.</p>
         <a class="btn btn-marca" href="#catalogo" data-cat="todas">Explorar el catálogo</a>
       </article>
 
@@ -124,14 +838,14 @@
 </section>
 
 <div class="aviso">
-  Todos los productos incluyen una marca · Precios sin IVA · No incluyen distribución fuera de Bogotá · Sujetos a inventario
+  Valores simulados, no oficiales · La cotización final la envía tu ejecutivo · Precios sin IVA ni fletes · Sujetos a inventario · <button type="button" class="ver-condiciones" id="ver-condiciones">Ver condiciones de precio</button>
 </div>
 
 <!-- ================= CATÁLOGO ================= -->
 <section class="seccion" id="catalogo">
   <div class="contenedor">
     <h2>Catálogo</h2>
-    <p class="sub">Busca por nombre o referencia, filtra por categoría y arma tu solicitud. Cada producto conserva la escala de precios y la cantidad mínima del catálogo.</p>
+    <p class="sub">Busca por nombre o referencia, filtra por categoría y arma tu solicitud. Los precios mostrados son <strong>valores simulados de referencia</strong>: no son oficiales y la cotización final la envía tu ejecutivo asignado.</p>
 
     <div class="barra-filtros">
       <div class="buscador">
@@ -143,6 +857,34 @@
 
     <div class="rejilla-productos" id="rejilla"></div>
     <div class="vacio oculto" id="vacio">No encontramos productos con ese criterio. Prueba con otra palabra o categoría.</div>
+  </div>
+</section>
+
+<!-- ================= ALIANZAS ================= -->
+<section class="seccion alianzas" id="alianzas">
+  <div class="contenedor">
+    <div class="encabezado-centro">
+      <span class="ojo">Alianzas</span>
+      <h2>Proveedores premium</h2>
+      <p class="sub">Llevamos tu marca a productos de primer nivel gracias a nuestras alianzas con las mejores marcas del mercado.</p>
+    </div>
+    <div class="rejilla-alianzas" id="rejilla-alianzas"></div>
+  </div>
+</section>
+
+<!-- ================= MÁS CATÁLOGOS ================= -->
+<section class="seccion" id="catalogos">
+  <div class="contenedor">
+    <div class="bloque-catalogos">
+      <div class="encabezado-centro">
+        <span class="ojo">Amplía tu oferta</span>
+        <h2>Más catálogos IP7</h2>
+        <p class="sub">Explora nuestros catálogos digitales y descarga las líneas completas por producto, sin saturar esta página.</p>
+      </div>
+      <div class="catalogos-web" id="catalogos-web"></div>
+      <div class="subtitulo-bloque"><span>Recursos descargables</span><h3>Catálogos completos en PDF</h3></div>
+      <div class="catalogos-pdf" id="catalogos-pdf"></div>
+    </div>
   </div>
 </section>
 
@@ -171,13 +913,10 @@
   <div class="contenedor fila">
     <img id="logo-pie" src="img/logo-ip7-noche.png" alt="IP7 · Imagen Perfecta Sie7e">
     <small>
-      <a href="mailto:carlossalinas@ip7.com.co">carlossalinas@ip7.com.co</a> ·
+      <a href="mailto:ejecutivo.comercial3@ip7.com.co">ejecutivo.comercial3@ip7.com.co</a> ·
       Calle 72A #63-12, Bogotá · <a href="https://www.ip7.com.co" target="_blank" rel="noopener">www.ip7.com.co</a>
     </small>
     <small>Catálogo SIEMENS · Precios vigentes hasta el <span class="vigencia"></span></small>
-  </div>
-  <div class="contenedor" style="margin-top:14px">
-    <a class="enlace-admin" href="admin.html">Editor de fotos</a>
   </div>
 </footer>
 
@@ -198,7 +937,7 @@
   <div class="pie">
     <div class="total">
       <span>Estimado</span>
-      <span id="total-carrito">$ 0<small>Sin IVA · referencia según escala</small></span>
+      <span id="total-carrito">$ 0<small>Valor simulado · sin IVA</small></span>
     </div>
     <button class="btn btn-marca" id="btn-cotizar">Solicitar cotización</button>
     <button class="btn btn-fantasma" id="btn-copiar">Copiar solicitud</button>
@@ -241,6 +980,42 @@
   </div>
 </div>
 
+<!-- ================= MODAL CONDICIONES DE PRECIO ================= -->
+<div class="modal" id="modal-condiciones">
+  <div class="caja caja-condiciones">
+    <button class="cerrar-x" id="cerrar-condiciones" aria-label="Cerrar">✕</button>
+    <span class="ojo">Antes de cotizar</span>
+    <h3>Condiciones de precio</h3>
+    <ul class="condiciones">
+      <li>Los valores mencionados <b>no incluyen costos adicionales</b> como fletes.</li>
+      <li>El precio incluye personalización de <b>1 logo, 1 tinta, 1 marca</b>. Otras opciones de marcación se cotizan aparte.</li>
+      <li><b>Estos valores son simulados</b> — la cotización final será compartida por su ejecutivo asignado.</li>
+      <li><b>Todas las imágenes son de referencia.</b></li>
+      <li><b>Mercancía sujeta a disponibilidad</b> de inventario.</li>
+      <li><b>Precios válidos hasta el <span class="vigencia"></span>.</b></li>
+    </ul>
+    <button class="btn btn-marca ancho" id="entendido-condiciones">Entendido</button>
+  </div>
+</div>
+
+<!-- ================= MODAL ACCESO ================= -->
+<div class="modal" id="modal-acceso">
+  <div class="caja caja-acceso">
+    <h3>Acceso para clientes SIEMENS</h3>
+    <p class="sub">Ingresa con tu usuario para ver los precios por escala y solicitar cotizaciones.</p>
+    <form id="form-acceso" autocomplete="on">
+      <div class="campo"><label for="a-usuario">Usuario</label><input id="a-usuario" name="usuario" autocomplete="username" autocapitalize="none" required></div>
+      <div class="campo"><label for="a-clave">Contraseña</label><input id="a-clave" name="clave" type="password" autocomplete="current-password" required></div>
+      <div class="error-acceso" id="error-acceso" hidden>Usuario o contraseña incorrectos.</div>
+      <div class="acciones-modal">
+        <button type="submit" class="btn btn-marca">Ingresar</button>
+        <button type="button" class="btn btn-fantasma" id="cerrar-acceso">Cancelar</button>
+      </div>
+      <p class="ayuda-acceso">¿No tienes acceso? <a href="#contacto" id="pedir-acceso">Solicítalo a tu ejecutivo</a>.</p>
+    </form>
+  </div>
+</div>
+
 <!-- ================= MODAL EJECUTIVOS ================= -->
 <div class="modal" id="modal-asesor">
   <div class="caja">
@@ -255,8 +1030,1153 @@
 
 <div id="brindis"></div>
 
-<script src="js/datos.js"></script>
-<script src="js/app.js"></script>
-<script src="js/motion.js"></script>
+<script>
+/* ============================================================================
+   IP7 · Catálogo SIEMENS — Configuración y datos
+   ----------------------------------------------------------------------------
+   TODO lo editable del sitio vive en este archivo. No hace falta tocar app.js.
+   ========================================================================== */
+
+const CONFIG = {
+  cliente: 'SIEMENS',
+
+  /* Logo del cliente. Si dejas la ruta de un archivo dentro de img/ el sitio lo usa;
+     con null se muestra el nombre compuesto tipográficamente. */
+  logoCliente: null,
+  vigencia: '31 de diciembre de 2026',
+
+  /* Correo que siempre va en copia en las cotizaciones */
+  copiaCotizacion: 'mercadeo@ip7.com.co',
+
+  /* Cantidad mínima única para TODO el catálogo.
+     - null  -> cada producto usa su propia cantidad mínima (la del catálogo).
+     - 5     -> fuerza 5 unidades en todos los productos.                     */
+  minimoGlobal: null,
+
+  /* Mínimo por defecto cuando un producto no trae escala de precios */
+  minimoPorDefecto: 10,
+
+  /* --------------------------------------------------------------------
+     EQUIPO COMERCIAL
+     Rellena "whatsapp" (solo dígitos, con indicativo 57) y "email".
+     Los que queden sin whatsapp no aparecen en la lista de WhatsApp;
+     los que queden sin email no aparecen en el selector de cotización.
+     -------------------------------------------------------------------- */
+  comerciales: [
+    /* foto: ruta dentro de img/ (ej. 'img/sevastian.jpg'). Sin foto se muestra la inicial. */
+    { nombre: 'Sevastian Velosa', cargo: 'Ejecutivo comercial · Cuenta SIEMENS', foto: null,
+      whatsapp: '573001715355', email: 'ejecutivo.comercial3@ip7.com.co' }
+  ],
+
+  /* --------------------------------------------------------------------
+     ACCESO (usuario Siemens). Sin sesión no se ven precios ni se puede cotizar.
+     Se guarda la huella SHA-256 de  "usuario:contraseña"  (usuario en minúsculas),
+     no la contraseña. Para cambiarla, calcula la huella de la nueva combinación:
+       node -e "console.log(require('crypto').createHash('sha256').update('usuario:clave').digest('hex'))"
+     OJO: es un acceso del lado del navegador; frena a un visitante casual pero no
+     es seguridad real (los precios viajan en este mismo archivo).
+     -------------------------------------------------------------------- */
+  acceso: { hash: '40b477ea3a9203281d5bc8b7d336106cf68eb3ba32ca40f88ab30dc7e92ec451' },
+
+  categorias: [
+    { id: 'morrales',        nombre: 'Morrales y Maletines' },
+    { id: 'bolsas',          nombre: 'Bolsas y Tulas' },
+    { id: 'libretas',        nombre: 'Libretas y Oficina' },
+    { id: 'boligrafos',      nombre: 'Bolígrafos' },
+    { id: 'paraguas',        nombre: 'Paraguas y Gorras' },
+    { id: 'bebidas',         nombre: 'Botilitos, Mugs y Café' },
+    { id: 'tecnologia',      nombre: 'Tecnología' },
+    { id: 'reconocimientos', nombre: 'Reconocimientos' },
+    { id: 'textil',          nombre: 'Textil y Confección' },
+    { id: 'publicidad',      nombre: 'Publicidad y POP' },
+    { id: 'varios',          nombre: 'Varios' }
+  ]
+};
+
+/* --------------------------------------------------------------------------
+   PRODUCTOS
+   escalas: [ [desde, hasta|null, precio], ... ]   precio en COP, sin IVA
+   fotos:   nombres de archivo dentro de img/  (la primera es la principal)
+   -------------------------------------------------------------------------- */
+const PRODUCTOS = [
+  /* ---------- Morrales y Maletines ---------- */
+  { id:'morral-adula', cat:'morrales', nombre:'Morral Adula', ref:'NW8302', sinMarco:true,
+    desc:'Compartimiento acolchado para laptop de 15" y espacio para tablet. Amplio interior para documentos, libros o cámara. Asas acolchadas y ajustables. Material: poliéster. Incluye placa metálica adicional para marca.',
+    fotos:['morral-adula.jpg'], escalas:[[10,50,154300],[51,100,143300],[101,null,140000]] },
+  { id:'maletin-neo', cat:'morrales', nombre:'Maletín Neo', ref:'VA-1041', sinMarco:true,
+    desc:'Maletín para viaje en poliéster, con bolsillo exterior con cremallera y bolsillo guarda zapatos. Reata para cargar.',
+    fotos:['maletin-neo.jpg'], escalas:[[10,50,153300],[51,100,142400],[101,null,139500]] },
+  { id:'morral-portatil-14', cat:'morrales', nombre:'Morral Portátil 14 Lts.', ref:'BO0312', sinMarco:true,
+    desc:'Morral con agarradera en aluminio y cargaderas ajustables. Compartimento con velcro para portátil de hasta 14" y otro con bolsillo interior para bolígrafo y libreta. Doble bolsillo frontal con cremallera. Incluye placa metálica para marcar láser.',
+    fotos:['morral-portatil-14.jpg'], escalas:[[10,50,129000],[51,100,118500],[101,null,115900]] },
+  { id:'canguro-master-ocean', cat:'morrales', nombre:'Canguro Master Ocean', ref:'VA-1077', sinMarco:true,
+    desc:'Canguro en poliéster reciclado de residuos plásticos recuperados del océano. Tres compartimentos con cierre de cremallera. Incluye placa metálica para marcar.',
+    fotos:['canguro-master-ocean.jpg'], escalas:[[10,50,108000],[51,100,97700],[101,null,95500]] },
+
+  /* ---------- Bolsas y Tulas ---------- */
+  { id:'bolsa-cambrel-baxter', cat:'bolsas', nombre:'Bolsa en Cambrel Baxter', ref:'VA-404', sinMarco:true,
+    desc:'Bolsa en cambrel 80 gm sellada con agarraderas. Medidas: 38 cm x 40 cm. Manijas: 30 cm.',
+    fotos:['bolsa-cambrel-baxter.jpg'], escalas:[[10,50,17300],[51,100,5100],[101,null,3500]] },
+  { id:'bolsa-cambrel-petit', cat:'bolsas', nombre:'Bolsa en Cambrel Petit', ref:'VA-712', sinMarco:true,
+    desc:'Sellada, con agarraderas. Medidas: 26.5 cm x 26.5 cm con fuelle de 8 cm en la base. Manijas: 14 cm.',
+    fotos:['bolsa-cambrel-petit.jpg'], escalas:[[10,50,16800],[51,100,4500],[101,null,3000]] },
+  { id:'slim-bag', cat:'bolsas', nombre:'Slim Bag', ref:'VA-404',
+    desc:'Bolsa ecológica, útil para tiendas de comestibles, mercados o librerías. Medidas: 37 x 39,3 cm. Longitud manija: 44 cm.',
+    fotos:['slim-bag.jpg'], escalas:[[10,50,17300],[51,100,5100],[101,null,3500]] },
+  { id:'sporty-bag-aspen', cat:'bolsas', nombre:'Sporty Bag Aspen', ref:'VA-617', sinMarco:true,
+    desc:'Bolsa tula en poliéster 210D. Medidas: 32 cm x 40.5 cm.',
+    fotos:['sporty-bag-aspen.jpg'], escalas:[[10,50,19100],[51,100,6900],[101,null,5300]] },
+  { id:'sporty-bag-ewok', cat:'bolsas', nombre:'Sporty Bag Ewok', ref:'VA-574', sinMarco:true,
+    desc:'Bolsa en cambrel 80 gm cosida. Medidas: 41 cm x 31 cm. También disponible en azul, blanco y verde (colores no mostrados en la foto).',
+    fotos:['sporty-bag-ewok.jpg'], escalas:[[10,50,17900],[51,100,5700],[101,null,4100]] },
+  { id:'sporty-bag-eco-yute', cat:'bolsas', nombre:'Sporty Bag Eco Yute', ref:'VA-941', sinMarco:true,
+    desc:'Bolsa en algodón de 280 gr, poliéster con base en yute y cordones en algodón para cerrar y cargar.',
+    fotos:['sporty-bag-eco-yute.jpg'], escalas:[[10,50,26100],[51,100,13700],[101,null,12000]] },
+  { id:'sporty-bag-evan', cat:'bolsas', nombre:'Sporty Bag Evan', ref:'VA-979', sinMarco:true,
+    desc:'Bolsa tula en poliéster (imitación yute). Medidas: 33.5 cm x 41 cm.',
+    fotos:['sporty-bag-evan.jpg'], escalas:[[10,50,24500],[51,100,12100],[101,null,10500]] },
+  { id:'sporty-bag-zetta', cat:'bolsas', nombre:'Sporty Bag Zetta', ref:'VA-1180', sinMarco:true,
+    desc:'Bolsa tula en algodón de 100 gr. Medidas: 37 cm x 41 cm. También disponible en amarillo (color no mostrado en la foto).',
+    fotos:['sporty-bag-zetta.jpg'], escalas:[[10,50,23100],[51,100,10800],[101,null,9200]] },
+
+  /* ---------- Libretas y Oficina ---------- */
+  { id:'libreta-vincent', cat:'libretas', nombre:'Libreta Vincent', ref:'OF-599', sinMarco:true,
+    desc:'Cubierta elaborada en corcho, 80 hojas de papel de 70 g reciclado con rayas.',
+    fotos:['libreta-vincent.jpg'], escalas:[[10,50,34100],[51,100,17200],[101,null,15600]] },
+  { id:'libreta-spyro', cat:'libretas', nombre:'Libreta Spyro', ref:'OF-497', sinMarco:true,
+    desc:'Libreta de 80 hojas con rayas, cubierta en polipropileno. No incluye bolígrafo.',
+    fotos:['libreta-spyro.jpg'], escalas:[[10,50,27100],[51,100,10300],[101,null,8800]] },
+  { id:'libreta-brooch', cat:'libretas', nombre:'Libreta Brooch', ref:'OF0628', sinMarco:true,
+    desc:'Funda de piel sintética con cierre magnético. Tamaño A5, 70 g, 80 hojas, con pegatinas de colores en el interior.',
+    fotos:['libreta-brooch.jpg'], escalas:[[10,50,35100],[51,100,18200],[101,null,16700]] },
+  { id:'libreta-legend', cat:'libretas', nombre:'Libreta Legend', ref:'OF-600', sinMarco:true,
+    desc:'Cubierta en poliéster reciclado a partir de botellas plásticas, 80 hojas de papel crema de 70 g con rayas.',
+    fotos:['libreta-legend.jpg'], escalas:[[10,50,32800],[51,100,15900],[101,null,14400]] },
+  { id:'libreta-igor-jumbo', cat:'libretas', nombre:'Libreta Igor Jumbo', ref:'OF-434-3', sinMarco:true,
+    desc:'Libreta con cubiertas en poliuretano con cierre elástico. 80 hojas color crema con rayas. También disponible en rojo, negro y gris (colores no mostrados en la foto).',
+    fotos:['libreta-igor-jumbo.jpg'], escalas:[[10,50,32500],[51,100,15600],[101,null,14100]] },
+  { id:'mini-libreta-like-it-eco', cat:'libretas', nombre:'Mini Libreta Like It Eco', ref:'OF-606', sinMarco:true,
+    desc:'Mini libreta argollada de 50 hojas en papel blanco. Opcional con o sin bolígrafo (ref. CARTOON-MI). También disponible en rojo y azul marino (colores no mostrados en la foto).',
+    fotos:['mini-libreta-like-it-eco.jpg'], escalas:[[10,50,23900],[51,100,8500],[101,null,5700]] },
+  { id:'libreta-igor-80', cat:'libretas', nombre:'Libreta Igor 80 Hojas', ref:'OF-434', sinMarco:true,
+    desc:'Libreta en poliuretano con cierre elástico. 80 hojas. No incluye bolígrafo.',
+    fotos:['libreta-igor-80.jpg'], escalas:[[10,50,20500],[51,100,12500],[101,null,9700]] },
+  { id:'memo-cube', cat:'libretas', nombre:'Memo Cube', ref:'OF0443',
+    desc:'Set en forma de cubo con espacio para tarjetas o bolígrafos. Contiene taco de 5 colores de 100 hojas cada color.',
+    fotos:['memo-cube.jpg'], escalas:[[10,50,30200],[51,100,19500],[101,null,16700]] },
+  { id:'memo-sticky-set-ring', cat:'libretas', nombre:'Memo Sticky Set Ring', ref:'OF-532', sinMarco:true,
+    desc:'Set de portastickies de cartón argollado doble O. 5 tacos de hojas autoadhesivas x 25 und. y 5 stickies de colores.',
+    fotos:['memo-sticky-set-ring.jpg'], escalas:[[10,50,26400],[51,100,15700],[101,null,12900]] },
+  { id:'sticky-set-eco', cat:'libretas', nombre:'Sticky Set Eco', ref:'OF-205', sinMarco:true,
+    desc:'Libreta con 5 stickies de colores y taco de papel autoadhesivo. Medidas: 8 cm x 9 cm.',
+    fotos:['sticky-set-eco.jpg'], escalas:[[10,50,17800],[51,100,7200],[101,null,4700]] },
+  { id:'resaltador-zanzibar', cat:'libretas', nombre:'Resaltador Zanzibar', ref:'ES0292', sinMarco:true,
+    desc:'Set de 5 resaltadores en estuche traslúcido plástico.',
+    fotos:['resaltador-zanzibar.jpg'], escalas:[[10,50,22300],[51,100,11700],[101,null,8900]] },
+
+  /* ---------- Bolígrafos ---------- */
+  { id:'boligrafo-ventura-frost', cat:'boligrafos', nombre:'Ventura Frost', ref:'VENT-FROST', sinMarco:true,
+    desc:'Bolígrafo plástico con clip metálico. Medidas: 14 cm.',
+    fotos:['boligrafo-ventura-frost.jpg'], escalas:[[100,200,2800],[201,500,1900],[501,null,1400]] },
+  { id:'boligrafo-ventura-eco', cat:'boligrafos', nombre:'Bolígrafo Ventura Eco', ref:'VENT-ECO-B', sinMarco:true,
+    desc:'Bolígrafo plástico con parte inferior en bambú natural. Clip metálico. Mezcla con material ecológico en fibra de trigo. También disponible en rojo, verde y natural (colores no mostrados en la foto).',
+    fotos:['boligrafo-ventura-eco.jpg'], escalas:[[100,200,3800],[201,500,2900],[501,null,2400]] },
+  { id:'boligrafo-colby-gyro', cat:'boligrafos', nombre:'Bolígrafo Colby Gyro', ref:'COLGY GYRO', sinMarco:true,
+    desc:'Bolígrafo metálico con stylus y mecanismo push. Incluye un spinner en bambú. Medidas: 14.5 cm. También disponible en negro y gris (colores no mostrados en la foto).',
+    fotos:['boligrafo-colby-gyro.jpg'], escalas:[[50,100,9800],[101,300,8700],[301,null,8200]] },
+  { id:'boligrafo-croma', cat:'boligrafos', nombre:'Bolígrafo "Croma"', ref:'BP300', sinMarco:true,
+    desc:'Plástico. Cuerpo de diferentes colores. Bolígrafo retráctil con clip plástico del mismo color del cuerpo.',
+    fotos:['boligrafo-croma.jpg'], escalas:[[100,200,2700],[201,500,1800],[501,null,1300]] },
+  { id:'boligrafo-otto', cat:'boligrafos', nombre:'Bolígrafo Otto', ref:'BP240', sinMarco:true,
+    desc:'Plástico. Cuerpo de color, botón pulsador y puntera color plata. Tinta negra.',
+    fotos:['boligrafo-otto.jpg'], escalas:[[100,200,2700],[201,500,1800],[501,null,1300]] },
+  { id:'boligrafo-touch-centauro', cat:'boligrafos', nombre:'Bolígrafo Touch Centauro', ref:'BP286', sinMarco:true,
+    desc:'Metálico. Pulsador touch color plata, clip metálico, cuerpo negro mate y destapa electro plateado en la parte superior e inferior.',
+    fotos:['boligrafo-touch-centauro.jpg'], escalas:[[50,100,4700],[101,300,3600],[301,null,3200]] },
+  { id:'apuntador-laser', cat:'boligrafos', nombre:'Apuntador Láser', ref:'ES0707',
+    desc:'Bolígrafo con linterna y láser, sistema de apertura twist. Incluye estuche metálico individual y 3 pilas de repuesto.',
+    fotos:['apuntador-laser.jpg'], escalas:[[50,100,15200],[101,300,13900],[301,null,13400]] },
+
+  /* ---------- Paraguas y Gorras ---------- */
+  { id:'paraguas-easyroll-23', cat:'paraguas', nombre:'Paraguas Easyroll 23"', ref:'SO-89', sinMarco:true,
+    desc:'Paraguas plegable en poliéster pongee 300T. Apertura y cierre automático.',
+    fotos:['paraguas-easyroll-23.jpg'], escalas:[[20,50,114700],[51,100,107000],[101,null,104000]] },
+  { id:'paraguas-gentle-27', cat:'paraguas', nombre:'Paraguas 27" Gentle', ref:'SO-70', sinMarco:true,
+    desc:'Poliéster pongee 190T. Apertura automática, cierre manual. Marco en fibra de vidrio. También disponible en plateado (color no mostrado en la foto).',
+    fotos:['paraguas-gentle-27.jpg'], escalas:[[20,50,107000],[51,100,99400],[101,null,96600]] },
+  { id:'paraguas-freerain-23', cat:'paraguas', nombre:'Paraguas Freerain 23"', ref:'SO-50', sinMarco:true,
+    desc:'Paraguas invertido (abre al revés) de 23". Poliéster pongee 190T doble tela. Apertura manual. También disponible en amarillo, verde, gris, azul marino y negro (colores no mostrados en la foto).',
+    fotos:['paraguas-freerain-23.jpg'], escalas:[[20,50,58300],[51,100,51300],[101,null,49100]] },
+  { id:'mini-paraguas-strap-21', cat:'paraguas', nombre:'Mini Paraguas Strap 21"', ref:'SO-43', sinMarco:true,
+    desc:'Poliéster pongee 190T. Plegable, mango con acabado en caucho y herraje metálico. Apertura semiautomática. También disponible en rojo, naranja, amarillo, verde, azul y gris (colores no mostrados en la foto).',
+    fotos:['mini-paraguas-strap-21.jpg'], escalas:[[20,50,49000],[51,100,42200],[101,null,40100]] },
+  { id:'mini-paraguas-21', cat:'paraguas', nombre:'Mini Paraguas 21"', ref:'SO-72', sinMarco:true,
+    desc:'Poliéster pongee 190T. Correa en velcro, mango en plástico y herraje metálico con fibra de vidrio blanco. Apertura y cierre automáticos con sistema antibrisa.',
+    fotos:['mini-paraguas-21.jpg'], escalas:[[20,50,40000],[51,100,33300],[101,null,31300]] },
+  { id:'paraguas-trendy-27', cat:'paraguas', nombre:'Paraguas Trendy Poliéster 27"', ref:'SO-17-2', destacado:true, sinMarco:true,
+    desc:'Poliéster con interior plateado. Mango en espuma y herraje metálico. 8 cascos. Semiautomático. También disponible en rojo, verde, negro, naranja, morado, gris y amarillo (colores no mostrados en la foto).',
+    fotos:['paraguas-trendy-27.jpg'], escalas:[[20,50,48300],[51,100,41300],[101,null,39400]] },
+  { id:'gorra-acrilica', cat:'paraguas', nombre:'Gorra Acrílica', ref:'DP', sinMarco:true,
+    desc:'Diseñada para brindar comodidad y estilo. El material acrílico ofrece durabilidad, suavidad y un ajuste perfecto.',
+    fotos:['gorra-acrilica.jpg'], escalas:[[10,50,20300],[51,100,14900],[101,null,13500]] },
+  { id:'gorra-brixton', cat:'paraguas', nombre:'Gorra Brixton', ref:'CAP-30', sinMarco:true,
+    desc:'Gorra en poliéster de alta calidad, de 6 paneles, con visera indeformable, botón forrado y cierre de hebilla metálica.',
+    fotos:['gorra-brixton.jpg'], escalas:[[10,50,27000],[51,100,21300],[101,null,19300]] },
+  { id:'gorra-golf', cat:'paraguas', nombre:'Gorra Golf', ref:'CAP-13',
+    desc:'5 paneles en dril liviano, visera indeformable, frente fusionado, encintado interior, tafilete sencillo y cierre plástico.',
+    fotos:['gorra-golf.jpg'], escalas:[[10,50,19700],[51,100,14000],[101,null,12200]] },
+
+  /* ---------- Botilitos, Mugs y Café ---------- */
+  { id:'botilito-metalico-600', cat:'bebidas', nombre:'Botilito Metálico 600ml', ref:'MU-256', sinMarco:true,
+    desc:'Metálico en aluminio, con tapa rosca. No apto para bebidas calientes.',
+    fotos:['botilito-metalico-600.jpg'], escalas:[[10,50,26100],[51,100,18400],[101,null,16400]] },
+  { id:'botilito-metalico-950', cat:'bebidas', nombre:'Botilito Metálico 950ml', ref:'MU-350', sinMarco:true,
+    desc:'Botilito doble pared vacuum en acero inoxidable, con aislamiento térmico que mantiene la bebida fría entre 8-10 h o caliente 3-4 h aprox. También disponible en plateado (color no mostrado en la foto).',
+    fotos:['botilito-metalico-950.jpg'], escalas:[[20,50,68100],[51,100,59900],[101,null,57300]] },
+  { id:'cafetera-vidrio-600', cat:'bebidas', nombre:'Cafetera en Vidrio 600ml', ref:'MU-404', sinMarco:true,
+    desc:'Cafetera prensa francesa con filtro de aluminio. Vidrio de borosilicato y tapa de bambú. Capacidad 600 ml. Empaque caja individual.',
+    fotos:['cafetera-vidrio-600.jpg'], escalas:[[10,50,55300],[51,100,47200],[101,null,44700]] },
+  { id:'botilito-sport-laguna', cat:'bebidas', nombre:'Botilito Sport Laguna', ref:'MU-11', sinMarco:true,
+    desc:'Botilito en AS, con agarradera plástica y tapa rosca. Libre de BPA. También disponible en rojo y negro (colores no mostrados en la foto).',
+    fotos:['botilito-sport-laguna.jpg'], escalas:[[10,50,29300],[51,100,20100],[101,null,17700]] },
+  { id:'botilito-pet-610', cat:'bebidas', nombre:'Botilito en PET 610ml', ref:'MU-90', sinMarco:true,
+    desc:'Botilito en PET con tapa en ABS super resistente, con empaque individual. Consultar inventario de tapas.',
+    fotos:['botilito-pet-610.jpg'], escalas:[[10,50,19700],[51,100,10500],[101,null,8400]] },
+  { id:'botilito-pvc-helice-650', cat:'bebidas', nombre:'Botilito en PVC Hélice 650ml', ref:'MU-59', sinMarco:true,
+    desc:'Botilito en PVC atóxico, tapa rosca con pestaña y diseño ergonómico. Producción nacional. También disponible en verde, morado, naranja, negro, blanco, rosado, amarillo y rojo (colores no mostrados en la foto).',
+    fotos:['botilito-pvc-helice-650.jpg'], escalas:[[10,50,19300],[51,100,10200],[101,null,8100]] },
+  { id:'mug-plastico-350', cat:'bebidas', nombre:'Mug Plástico 350ml', ref:'MU-407', sinMarco:true,
+    desc:'Mug plástico con interior en acero inoxidable. Taparrosca de seguridad. Empaque caja individual. También disponible en negro y blanco (colores no mostrados en la foto).',
+    fotos:['mug-plastico-350.jpg'], escalas:[[10,50,32900],[51,100,23700],[101,null,21300]] },
+  { id:'mug-ceramica-11oz', cat:'bebidas', nombre:'Mug Cerámica 11oz', ref:'MU-112', sinMarco:true,
+    desc:'Cerámica con base en corcho y tapa plástica. No apto para microondas ni lavavajillas. Tapa protectora de cierre a presión. También disponible en azul oscuro con base de corcho (color no mostrado en la foto).',
+    fotos:['mug-ceramica-11oz.jpg'], escalas:[[36,72,38300],[73,108,28900],[109,null,26800]] },
+  { id:'mug-ceramica-tablero-11oz', cat:'bebidas', nombre:'Mug Cerámica Tablero 11oz', ref:'MU-06', sinMarco:true,
+    desc:'Mug para escribir con tiza, borrable como un tablero. Incluye tiza blanca. Apto para microondas y lavavajillas. Empaque caja individual.',
+    fotos:['mug-ceramica-tablero-11oz.jpg'], escalas:[[36,72,21500],[73,108,15100],[109,null,14000]] },
+  { id:'mug-ceramica-10oz', cat:'bebidas', nombre:'Mug Cerámica 10oz', ref:'VA-126', sinMarco:true,
+    desc:'Mug de cerámica en forma cuadrada. Apto para microondas y lavavajillas.',
+    fotos:['mug-ceramica-10oz.jpg'], escalas:[[36,72,17500],[73,108,15900],[109,null,14900]] },
+
+  /* ---------- Tecnología ---------- */
+  { id:'speaker-bluetooth-te650', cat:'tecnologia', nombre:'Speaker Bluetooth Lantern', ref:'TE-650',
+    desc:'Speaker Bluetooth plástico con manija en imitación cuero. Lector de tarjetas TF, puerto USB, puerto Tipo C y puerto AUX.',
+    fotos:['speaker-bluetooth-te650.jpg'], escalas:[[10,50,135900],[51,100,125300],[101,null,121500]] },
+  { id:'speaker-bluetooth-te276', cat:'tecnologia', nombre:'Speaker Bluetooth Light', ref:'TE-276', sinMarco:true,
+    desc:'Speaker Bluetooth plástico de 3W con lector de tarjeta (no incluida), entrada AUX y 6 tipos de luz.',
+    fotos:['speaker-bluetooth-te276.jpg'], escalas:[[10,50,70000],[51,100,60300],[101,null,57500]] },
+  { id:'speaker-bluetooth-plant', cat:'tecnologia', nombre:'Speaker Bluetooth Plant', ref:'TE-549', sinMarco:true,
+    desc:'Speaker plástico Bluetooth de 3W con luz LED multicolor y matera para plantas. Funciona como manos libres. Empaque caja individual.',
+    fotos:['speaker-bluetooth-plant.jpg'], escalas:[[10,50,64300],[51,100,54700],[101,null,51900]] },
+  { id:'speaker-bluetooth-te361', cat:'tecnologia', nombre:'Speaker Bluetooth Shower', ref:'TE-36-1', sinMarco:true,
+    desc:'Speaker Bluetooth en plástico con chupa, resistente al agua, 3W.',
+    fotos:['speaker-bluetooth-te361.jpg'], escalas:[[10,50,39200],[51,100,29900],[101,null,27500]] },
+  { id:'reloj-con-cargador', cat:'tecnologia', nombre:'Reloj con Cargador', ref:'TE-495', sinMarco:true,
+    desc:'Cargador inalámbrico en bambú de 10W. Reloj digital con temperatura. Input DC 5V 1.5A, Output 1.1A 10W. Empaque caja individual.',
+    fotos:['reloj-con-cargador.jpg'], escalas:[[10,50,101900],[51,100,93100],[101,null,90100]] },
+  { id:'linterna-con-set', cat:'tecnologia', nombre:'Linterna con Set de Herramientas', ref:'T742', sinMarco:true,
+    desc:'Linterna con set de herramientas. Batería de litio recargable. Linterna desmontable con base imantada.',
+    fotos:['linterna-con-set.jpg'], escalas:[[10,50,64400],[51,100,54700],[101,null,51900]] },
+  { id:'puerto-usb-einstein', cat:'tecnologia', nombre:'Puerto USB Einstein', ref:'TE-99', sinMarco:true,
+    desc:'Puerto USB de 4 salidas. Medidas: 1.5 cm x 5 cm de diámetro.',
+    fotos:['puerto-usb-einstein.jpg'], escalas:[[10,50,28990],[51,100,19800],[101,null,17500]] },
+  { id:'soporte-para-celular', cat:'tecnologia', nombre:'Soporte para Celular', ref:'T629', sinMarco:true,
+    desc:'Soporte de escritorio para celular con orificio que permite el paso del cable para facilitar la carga. Presentación en caja de regalo kraft.',
+    fotos:['soporte-para-celular.jpg'], escalas:[[10,50,16300],[51,100,8600],[101,null,6700]] },
+  { id:'power-banks', cat:'tecnologia', nombre:'Power Banks', ref:'Consultar', sinMarco:true,
+    desc:'Nunca te quedes sin energía. Power banks personalizados que acompañan a tus clientes a todas partes.',
+    fotos:['power-banks.jpg'], escalas:[], cotizacion:true },
+  { id:'memorias-usb', cat:'tecnologia', nombre:'Memorias USB', ref:'Consultar', sinMarco:true,
+    desc:'Conecta tu marca. USBs prácticos, funcionales y 100% personalizables.',
+    fotos:['memorias-usb.jpg'], escalas:[], cotizacion:true },
+
+  /* ---------- Reconocimientos ---------- */
+  { id:'pin-con-tarjeta', cat:'reconocimientos', nombre:'Pin con Tarjeta', ref:'Consultar', sinMarco:true,
+    desc:'Pin personalizado troquelado y pintado, presentado con tarjeta. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
+    fotos:['pin-con-tarjeta.jpg'], escalas:[], cotizacion:true },
+  { id:'pin-pintado', cat:'reconocimientos', nombre:'Pin Pintado', ref:'Consultar', sinMarco:true,
+    desc:'Pin en troquel pintado. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
+    fotos:['pin-pintado.jpg'], escalas:[], cotizacion:true },
+  { id:'pin-litorrecina', cat:'reconocimientos', nombre:'Pin en Litorrecina', ref:'Consultar', sinMarco:true,
+    desc:'Pin personalizado en litorrecina. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
+    fotos:['pin-litorrecina.jpg'], escalas:[], cotizacion:true },
+  { id:'placa-reconocimiento', cat:'reconocimientos', nombre:'Placa de Reconocimiento', ref:'Consultar', sinMarco:true,
+    desc:'Placa personalizada, ideal para reconocer el esfuerzo de tus colaboradores y de quienes dejan huella. Un detalle significativo que celebra logros y compromiso.',
+    fotos:['placa-reconocimiento.jpg'], escalas:[], cotizacion:true },
+  { id:'trofeo-base-pino', cat:'reconocimientos', nombre:'Trofeo con Base de Pino', ref:'Consultar', sinMarco:true, formato:'alto',
+    desc:'Elegante trofeo con cuerpo en acrílico cristal de 8 mm, grabado láser personalizado con texto y logotipo. Incluye base en madera de pino y placa frontal en acrílico negro grabado.',
+    fotos:['trofeo-base-pino.jpg'], escalas:[], cotizacion:true },
+  { id:'trofeos-zeus', cat:'reconocimientos', nombre:'Trofeos Zeus', ref:'Consultar', sinMarco:true, formato:'alto',
+    desc:'Trofeo en acrílico cristal de 8 mm de grosor con base del mismo material. Recubierto con acrílico espejo de 2 mm y grabado láser personalizado con textos y logotipos a color.',
+    fotos:['trofeos-zeus.jpg'], escalas:[], cotizacion:true },
+  { id:'trofeo-base-negra', cat:'reconocimientos', nombre:'Trofeo Base Negra', ref:'Consultar', sinMarco:true, formato:'alto',
+    desc:'Trofeo con cuerpo en acrílico cristal de 8 mm, grabado láser con textos y logotipos totalmente personalizados. Base en madera con acabado negro y placa frontal en acrílico.',
+    fotos:['trofeo-base-negra.jpg'], escalas:[], cotizacion:true },
+  { id:'trofeo-con-estrella', cat:'reconocimientos', nombre:'Trofeo con Estrella', ref:'Consultar', sinMarco:true, formato:'alto',
+    desc:'Diseño elegante y moderno, ideal para reconocer logros destacados. El cuerpo en vidrio cristal aporta distinción y la estrella metálica simboliza excelencia y superación.',
+    fotos:['trofeo-con-estrella.jpg'], escalas:[], cotizacion:true },
+  { id:'medallas-bano-oro', cat:'reconocimientos', nombre:'Medallas en Baño de Oro', ref:'Consultar', sinMarco:true,
+    desc:'Medallas elaboradas en metal con acabado en baño de oro, ideales para premiaciones y reconocimientos especiales.',
+    fotos:['medallas-bano-oro.jpg'], escalas:[], cotizacion:true },
+  { id:'cintas-carnet', cat:'reconocimientos', nombre:'Cintas para Carnet', ref:'Consultar', sinMarco:true,
+    desc:'Cintas para colgar carnet de cuello, personalizadas con tu logo y colores corporativos. Incluyen gancho metálico y opción de broche de seguridad.',
+    fotos:['cintas-carnet.jpg'], escalas:[], cotizacion:true },
+
+  /* ---------- Textil y Confección ---------- */
+  { id:'camiseta-tshirt', cat:'textil', nombre:'Camiseta T-Shirt', ref:'Texcol', sinMarco:true,
+    desc:'Camiseta tipo T-Shirt, cómoda y versátil, ideal para uso diario o eventos promocionales. Fabricada en materiales suaves y resistentes, perfecta para personalizar con tu marca.',
+    fotos:['camiseta-tshirt.jpg'], escalas:[], cotizacion:true },
+  { id:'camiseta-hombre', cat:'textil', nombre:'Camiseta Hombre', ref:'5000', sinMarco:true,
+    desc:'Camiseta tipo T-Shirt disponible en varias tallas y colores, perfecta para cualquier ocasión y estilo.',
+    fotos:['camiseta-hombre.jpg'], escalas:[], cotizacion:true },
+  { id:'camiseta-mujer', cat:'textil', nombre:'Camiseta Mujer', ref:'5000L', sinMarco:true,
+    desc:'Camiseta tipo T-Shirt disponible en varias tallas y colores, perfecta para cualquier ocasión y estilo.',
+    fotos:['camiseta-mujer.jpg'], escalas:[], cotizacion:true },
+  { id:'camisas-oxford', cat:'textil', nombre:'Camisas en Oxford', ref:'Consultar', sinMarco:true,
+    desc:'Confeccionadas en tela Oxford de alta calidad, perfectas para uso corporativo, eventos empresariales o uniformes. Disponibles en varios colores y tallas, personalizables con bordado o estampado.',
+    fotos:['camisas-oxford.jpg'], escalas:[], cotizacion:true },
+  { id:'camiseta-polo', cat:'textil', nombre:'Camiseta tipo Polo', ref:'Consultar', sinMarco:true,
+    desc:'Versátiles, cómodas y con estilo. Ideales para uniformes corporativos, eventos o promociones. Fabricadas en materiales de alta calidad tipo piqué o algodón, con opción de bordado o estampado.',
+    fotos:['camiseta-polo.jpg'], escalas:[], cotizacion:true },
+  { id:'buso-capota-dp', cat:'textil', nombre:'Buso con Capota DP', ref:'DP', sinMarco:true,
+    desc:'Comodidad, abrigo y estilo en un solo producto. Ideal para uniformes, eventos o promociones. Disponible en varios colores y tallas, personalizable con bordado o estampado.',
+    fotos:['buso-capota-dp.jpg','buso-capota-dp-2.jpg'], escalas:[], cotizacion:true },
+  { id:'buso-manga-larga', cat:'textil', nombre:'Buso Manga Larga', ref:'Gildan', sinMarco:true,
+    desc:'Comodidad, abrigo y estilo en un solo producto. Ideal para uniformes, eventos o promociones. Disponible en varios colores y tallas, personalizable con bordado o estampado.',
+    fotos:['buso-manga-larga.jpg','buso-manga-larga-2.jpg'], escalas:[], cotizacion:true },
+  { id:'buso-con-capota-gildan', cat:'textil', nombre:'Buso con Capota', ref:'Gildan', sinMarco:true,
+    desc:'Comodidad, abrigo y estilo en un solo producto. Ideal para uniformes, eventos o promociones. Disponible en varios colores y tallas.',
+    fotos:['buso-con-capota-gildan.jpg'], escalas:[], cotizacion:true },
+  { id:'buso-cuello-cadete', cat:'textil', nombre:'Buso Cuello Cadete', ref:'Gildan', sinMarco:true,
+    desc:'Comodidad, abrigo y estilo en un solo producto. Ideal para uniformes, eventos o promociones. Disponible en varios colores y tallas.',
+    fotos:['buso-cuello-cadete.jpg'], escalas:[], cotizacion:true },
+  { id:'chaqueta-urban-wear', cat:'textil', nombre:'Chaqueta Urban Wear', ref:'VA-666', sinMarco:true,
+    desc:'Chaqueta rompevientos en poliéster de alta calidad con bolsa individual para cargar. Unisex, impermeable. Tallas S, M, L, XL. Marca por bordado.',
+    fotos:['chaqueta-urban-wear.jpg'], escalas:[], cotizacion:true },
+
+  /* ---------- Publicidad y POP ---------- */
+  { id:'pendon-arana', cat:'publicidad', nombre:'Pendón tipo Araña', ref:'Consultar', sinMarco:true,
+    desc:'Ideal para exhibiciones, eventos, puntos de venta y oficinas. Estructura liviana y fácil de armar, impresión en alta calidad sobre lona o tela. Incluye bolsa para transporte.',
+    fotos:['pendon-arana.jpg'], escalas:[], cotizacion:true },
+  { id:'pendon-roll-up', cat:'publicidad', nombre:'Pendón tipo Roll Up', ref:'Consultar', sinMarco:true,
+    desc:'Ideal para exhibiciones, eventos, puntos de venta y oficinas. Estructura liviana y fácil de armar, impresión en alta calidad sobre lona o tela. Medidas estándar o personalizadas.',
+    fotos:['pendon-roll-up.jpg'], escalas:[], cotizacion:true },
+  { id:'acrilico', cat:'publicidad', nombre:'Acrílico', ref:'Consultar', sinMarco:true,
+    desc:'Diseños modernos, resistentes y elegantes. Perfectos para trofeos, placas conmemorativas, señalización interna, porta nombres y más.',
+    fotos:['acrilico.jpg'], escalas:[], cotizacion:true },
+  { id:'calendario', cat:'publicidad', nombre:'Calendario', ref:'Consultar', sinMarco:true,
+    desc:'Calendarios personalizados para tu empresa. Organiza, promociona y permanece presente todo el año.',
+    fotos:['calendario.jpg'], escalas:[], cotizacion:true },
+  { id:'aguas', cat:'publicidad', nombre:'Aguas Personalizadas', ref:'Consultar', sinMarco:true,
+    desc:'Botellas con tu logo o mensaje, ideales para eventos, ferias, campañas o kits promocionales. Disponibles en diferentes tamaños y diseños.',
+    fotos:['aguas.jpg'], escalas:[], cotizacion:true },
+  { id:'dulces-chocolates', cat:'publicidad', nombre:'Dulces y Chocolates', ref:'Consultar', sinMarco:true,
+    desc:'Chocolates, caramelos y confites con tu logo o diseño especial. Perfectos para eventos, campañas y regalos corporativos.',
+    fotos:['dulces-chocolates.jpg'], escalas:[], cotizacion:true },
+
+  /* ---------- Varios ---------- */
+  { id:'ventilador-hook', cat:'varios', nombre:'Ventilador Hook', ref:'VA-1048', sinMarco:true,
+    desc:'Ventilador en plástico con gancho carabinero. Pilas 3xAAA (no incluidas). Empaque caja individual.',
+    fotos:['ventilador-hook.jpg'], escalas:[[10,50,33100],[51,100,23900],[101,null,21500]] },
+  { id:'gafas-kilpan-eco', cat:'varios', nombre:'Gafas Kilpan Eco', ref:'VA-918', sinMarco:true,
+    desc:'Gafas con marco plástico en PP con fibra de bambú, lentes con protección UV400. Medidas abierta: 15 cm x 14.8 cm.',
+    fotos:['gafas-kilpan-eco.jpg'], escalas:[[10,50,21500],[51,100,12500],[101,null,10300]] },
+  { id:'bola-antiestres-neon', cat:'varios', nombre:'Bola Antiestrés Neón', ref:'VA-89-2', sinMarco:true,
+    desc:'Poliuretano. Sin bolsa individual. Medidas: 6.3 cm de diámetro.',
+    fotos:['bola-antiestres-neon.jpg'], escalas:[[10,50,18400],[51,100,8700],[101,null,6500]] },
+];
+
+/* Proveedores / marcas aliadas (sección "Proveedores premium") */
+const PROVEEDORES = ['Stanley','Mario Hernández','Arturo Calle','Ralph Lauren','Lacoste','Adidas','Juan Valdez',
+  'Café Quindío','Decathlon','Brisa','Nike','Vélez','Loto del Sur','Rondo'];
+
+/* Catálogos digitales de IP7 (sección "Más catálogos") */
+const CATALOGOS_WEB = [
+  { nombre:'Catálogo digital IP7',      detalle:'ip7.cataprom.com',              url:'https://ip7.cataprom.com/' },
+  { nombre:'Catálogo alternativo',      detalle:'ip7-alternativa.muy.promo',     url:'https://ip7-alternativa.muy.promo/' },
+  { nombre:'Promocionales en Línea',    detalle:'promocionalesenlinea.com',      url:'https://www.promocionalesenlinea.com/Imagenperfecta7?limit=42' }
+];
+
+/* Catálogos completos en PDF (optimizados para web, en la carpeta catalogos/).
+   Para cambiar uno, reemplaza el archivo con el mismo nombre. */
+const CATALOGOS_PDF = [
+  { nombre:'Ecológico',                peso:'2.8 MB', url:'catalogos/ecologico.pdf' },
+  { nombre:'Comestibles',              peso:'1.1 MB', url:'catalogos/comestibles.pdf' },
+  { nombre:'Trofeos, Placas y Medallas', peso:'2.1 MB', url:'catalogos/trofeos-placas-medallas.pdf' },
+  { nombre:'Litografía',               peso:'1.3 MB', url:'catalogos/litografia.pdf' },
+  { nombre:'Recién Nacidos',           peso:'1.0 MB', url:'catalogos/recien-nacidos.pdf' },
+  { nombre:'Mascotas (PET)',           peso:'1.3 MB', url:'catalogos/mascotas-pet.pdf' },
+  { nombre:'Peluches',                 peso:'2.0 MB', url:'catalogos/peluches.pdf' },
+  { nombre:'Portadocumentos',          peso:'0.6 MB', url:'catalogos/portadocumentos.pdf' },
+  { nombre:'Inflables',                peso:'1.8 MB', url:'catalogos/inflables.pdf' }
+];
+
+/* Valores de envío informativos (pág. 24 del catálogo) */
+const ENVIOS = [
+  { zona:'Entregas en Bogotá', valor:16500 },
+  { zona:'Entregas en Sabana (Cajicá, Mosquera, Cota)', valor:23000 },
+  { zona:'Ciudades principales (Medellín, Barranquilla)', valor:45000 }
+];
+
+</script>
+<script>
+/* ==========================================================================
+   IP7 · Catálogo SIEMENS — lógica del sitio
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const $  = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+  const CLAVE_TEMA = 'ip7-siemens-tema';
+  const CLAVE_CARRITO = 'ip7-siemens-carrito';
+
+  /* ---------------------------------------------------------------- utils */
+  const cop = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+
+  function minimoDe(p) {
+    if (CONFIG.minimoGlobal) return CONFIG.minimoGlobal;
+    if (p.minimo) return p.minimo;
+    if (p.escalas && p.escalas.length) return p.escalas[0][0];
+    return CONFIG.minimoPorDefecto;
+  }
+  function precioPara(p, cantidad) {
+    if (!p.escalas || !p.escalas.length) return null;
+    let precio = p.escalas[0][2];
+    for (const [desde, hasta, valor] of p.escalas) {
+      if (cantidad >= desde && (hasta === null || cantidad <= hasta)) return valor;
+      if (cantidad > desde) precio = valor;
+    }
+    return precio;
+  }
+  const etiquetaEscala = ([d, h]) => h === null ? d + '+' : d + '–' + h;
+
+  function brindis(texto) {
+    const el = $('#brindis');
+    el.textContent = texto;
+    el.classList.add('ver');
+    clearTimeout(brindis._t);
+    brindis._t = setTimeout(() => el.classList.remove('ver'), 2200);
+  }
+
+
+  /* ---------------------------------------------------------------- acceso */
+  function sha256(msg) {
+    const enc = new TextEncoder().encode(msg);
+    const H = [], K = [];
+    const esPrimo = x => { for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+    for (let p = 2, n = 0; n < 64; p++) {
+      if (!esPrimo(p)) continue;
+      if (n < 8) H[n] = (Math.pow(p, 1 / 2) % 1) * 4294967296 | 0;
+      K[n++] = (Math.pow(p, 1 / 3) % 1) * 4294967296 | 0;
+    }
+    const l = enc.length, nb = (((l + 8) >> 6) + 1) << 4, w = new Array(nb).fill(0);
+    for (let i = 0; i < l; i++) w[i >> 2] |= enc[i] << (24 - (i & 3) * 8);
+    w[l >> 2] |= 0x80 << (24 - (l & 3) * 8);
+    w[nb - 1] = l * 8;
+    for (let o = 0; o < nb; o += 16) {
+      const m = w.slice(o, o + 16);
+      for (let i = 16; i < 64; i++) {
+        const a = m[i - 15], b = m[i - 2];
+        m[i] = (m[i - 16] + ((a >>> 7 | a << 25) ^ (a >>> 18 | a << 14) ^ (a >>> 3)) + m[i - 7] +
+                ((b >>> 17 | b << 15) ^ (b >>> 19 | b << 13) ^ (b >>> 10))) | 0;
+      }
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let i = 0; i < 64; i++) {
+        const t1 = (h + ((e >>> 6 | e << 26) ^ (e >>> 11 | e << 21) ^ (e >>> 25 | e << 7)) +
+                    ((e & f) ^ (~e & g)) + K[i] + m[i]) | 0;
+        const t2 = (((a >>> 2 | a << 30) ^ (a >>> 13 | a << 19) ^ (a >>> 22 | a << 10)) +
+                    ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      [a, b, c, d, e, f, g, h].forEach((v, i) => { H[i] = (H[i] + v) | 0; });
+    }
+    return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+  }
+  const CLAVE_SESION = 'ip7-siemens-sesion';
+  let sesion = false;
+  try { sesion = localStorage.getItem(CLAVE_SESION) === CONFIG.acceso.hash; } catch (e) {}
+  const iconoCandado = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+  /* ----------------------------------------------------------------- tema */
+  const iconos = { noche: '☀︎', dia: '☾' };
+  function aplicarTema(tema, conDestello) {
+    document.documentElement.dataset.tema = tema;
+    $('#icono-tema').textContent = iconos[tema];
+    const logo = tema === 'dia' ? 'img/logo-ip7-dia.png' : 'img/logo-ip7-noche.png';
+    $('#logo-img').src = logo;
+    $('#logo-pie').src = logo;
+    $('meta[name="theme-color"]').setAttribute('content', tema === 'dia' ? '#eef3f3' : '#061a1d');
+    try { localStorage.setItem(CLAVE_TEMA, tema); } catch (e) {}
+    if (conDestello) {
+      const d = $('#destello');
+      d.classList.remove('encender');
+      void d.offsetWidth;
+      d.classList.add('encender');
+    }
+  }
+  let temaGuardado = null;
+  try { temaGuardado = localStorage.getItem(CLAVE_TEMA); } catch (e) {}
+  aplicarTema(temaGuardado || 'noche', false);
+  $('#btn-tema').addEventListener('click', () => {
+    aplicarTema(document.documentElement.dataset.tema === 'dia' ? 'noche' : 'dia', true);
+  });
+
+  /* ------------------------------------------------------------- cabecera */
+  if (CONFIG.logoCliente) {
+    const im = $('#logo-cliente');
+    im.src = CONFIG.logoCliente;
+    im.hidden = false;
+    im.onload = () => $('.cliente-texto').style.display = 'none';
+    im.onerror = () => { im.hidden = true; };
+  }
+  $$('.vigencia').forEach(el => el.textContent = CONFIG.vigencia);
+  $('#vigencia-hero').textContent = CONFIG.vigencia;
+  $('#dato-productos').textContent = PRODUCTOS.length;
+  $('#dato-categorias').textContent = CONFIG.categorias.length;
+  $('#copia-correo').textContent = CONFIG.copiaCotizacion;
+
+  /* --------------------------------------------------------------- hero */
+  const destacadosHero = ['morral-portatil-14', 'paraguas-trendy-27', 'mug-ceramica-11oz',
+                          'libreta-brooch', 'speaker-bluetooth-plant', 'botilito-metalico-600'];
+  $('#vitrina').innerHTML = destacadosHero.map(id => {
+    const p = PRODUCTOS.find(x => x.id === id);
+    return p ? `<figure><img src="img/${p.fotos[0]}" alt="${p.nombre}" loading="lazy"></figure>` : '';
+  }).join('');
+
+  /* ------------------------------------------------------------- envíos */
+  $('#tabla-envios').innerHTML = ENVIOS
+    .map(e => `<div><span>${e.zona}</span><b>${cop(e.valor)}</b></div>`).join('');
+
+  /* ----------------------------------------------------------- filtros */
+  let categoriaActiva = 'todas';
+  let termino = '';
+
+  $('#categorias').innerHTML =
+    `<button class="activa" data-cat="todas">Todas (${PRODUCTOS.length})</button>` +
+    CONFIG.categorias.map(c => {
+      const n = PRODUCTOS.filter(p => p.cat === c.id).length;
+      return `<button data-cat="${c.id}">${c.nombre} (${n})</button>`;
+    }).join('');
+
+  $('#categorias').addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    categoriaActiva = b.dataset.cat;
+    $$('#categorias button').forEach(x => x.classList.toggle('activa', x === b));
+    b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    pintar();
+  });
+
+  /* ------------------------------------------------------------- navegación */
+  const portadaCat = {
+    morrales:'morral-adula', bolsas:'sporty-bag-eco-yute', libretas:'libreta-brooch',
+    boligrafos:'boligrafo-colby-gyro', paraguas:'paraguas-trendy-27', bebidas:'mug-ceramica-11oz',
+    tecnologia:'speaker-bluetooth-plant', reconocimientos:'trofeo-con-estrella',
+    textil:'camiseta-polo', publicidad:'calendario', varios:'gafas-kilpan-eco'
+  };
+  const fotoCat = id => {
+    const p = PRODUCTOS.find(x => x.id === portadaCat[id]) || PRODUCTOS.find(x => x.cat === id);
+    return p ? 'img/' + p.fotos[0] : '';
+  };
+
+  $('#mega-rejilla').innerHTML = CONFIG.categorias.map(c => `
+    <button class="mega-cat" data-cat="${c.id}">
+      <img src="${fotoCat(c.id)}" alt="" loading="lazy">
+      <span><span class="mn">${c.nombre}</span><br>
+      <span class="mc">${PRODUCTOS.filter(p => p.cat === c.id).length} productos</span></span>
+    </button>`).join('');
+
+  $('#cajon-cats').innerHTML = CONFIG.categorias.map(c => `
+    <button data-cat="${c.id}">${c.nombre}<span>${PRODUCTOS.filter(p => p.cat === c.id).length} productos</span></button>`).join('');
+
+  function irACategoria(cat) {
+    const b = $(`#categorias button[data-cat="${cat}"]`);
+    if (b) b.click();
+    cerrarMega(); cerrarCajon();
+    setTimeout(() => $('#catalogo').scrollIntoView({ behavior: 'smooth' }), 40);
+  }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-cat]');
+    if (!t || t.closest('#categorias')) return;
+    e.preventDefault();
+    irACategoria(t.dataset.cat);
+  });
+
+  /* mega menú */
+  const mega = $('#mega'), btnMega = $('#btn-mega');
+  function abrirMega() { mega.hidden = false; btnMega.setAttribute('aria-expanded', 'true'); }
+  function cerrarMega() { mega.hidden = true; btnMega.setAttribute('aria-expanded', 'false'); }
+  btnMega.addEventListener('click', () => mega.hidden ? abrirMega() : cerrarMega());
+  const zonaMega = btnMega.closest('.menu-item');
+  let salida;
+  zonaMega.addEventListener('mouseenter', () => { clearTimeout(salida); abrirMega(); });
+  zonaMega.addEventListener('mouseleave', () => { salida = setTimeout(cerrarMega, 180); });
+  document.addEventListener('click', e => { if (!zonaMega.contains(e.target)) cerrarMega(); });
+
+  /* cajón móvil */
+  const cajon = $('#cajon'), btnMenu = $('#btn-menu');
+  function cerrarCajon() { cajon.hidden = true; btnMenu.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
+  btnMenu.addEventListener('click', () => {
+    const abrir = cajon.hidden;
+    cajon.hidden = !abrir;
+    btnMenu.setAttribute('aria-expanded', String(abrir));
+    document.body.style.overflow = abrir ? 'hidden' : '';
+  });
+  $$('#cajon nav > a:not([data-cat])').forEach(a => a.addEventListener('click', cerrarCajon));
+
+  /* cabecera pegada + barra de progreso */
+  const barra = $('#progreso'), cab = $('#cabecera');
+  function alDesplazar() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    barra.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+    cab.classList.toggle('pegada', scrollY > 12);
+  }
+  addEventListener('scroll', alDesplazar, { passive: true });
+  alDesplazar();
+
+  let temporizador;
+  $('#buscar').addEventListener('input', e => {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(() => { termino = e.target.value.trim().toLowerCase(); pintar(); }, 130);
+  });
+
+  function filtrados() {
+    return PRODUCTOS.filter(p => {
+      if (categoriaActiva !== 'todas' && p.cat !== categoriaActiva) return false;
+      if (!termino) return true;
+      return (p.nombre + ' ' + p.ref + ' ' + p.desc).toLowerCase().includes(termino);
+    });
+  }
+
+  /* --------------------------------------------------------- tarjetas */
+  function tarjetaHTML(p) {
+    const min = minimoDe(p);
+    const galeria = p.fotos.map(f => `<img src="img/${f}" alt="${p.nombre}" loading="lazy">`).join('');
+    const flechas = p.fotos.length > 1
+      ? `<button class="flecha izq" data-dir="-1" aria-label="Foto anterior">‹</button>
+         <button class="flecha der" data-dir="1" aria-label="Foto siguiente">›</button>
+         <div class="puntos">${p.fotos.map((_, i) => `<i class="${i === 0 ? 'on' : ''}"></i>`).join('')}</div>`
+      : '';
+    const precios = !sesion
+      ? `<button class="bloqueo acceder" type="button">${iconoCandado}<span><b>Precios para clientes</b><br>Inicia sesión para ver la escala y cotizar</span></button>`
+      : (p.escalas && p.escalas.length)
+        ? `<div class="escalas">${p.escalas.map(e =>
+            `<span><i>${etiquetaEscala(e)}</i><b>${cop(e[2])}</b></span>`).join('')}</div><div class="nota-sim">Valor simulado · sin IVA</div>`
+        : `<div class="consultar">Cotización especial — la define tu ejecutivo de cuenta según cantidad y personalización.</div>`;
+
+    return `
+    <article class="tarjeta" data-id="${p.id}">
+      <div class="galeria${p.vertical ? ' vertical' : ''}${p.formato === 'alto' ? ' alta' : ''}${p.sinMarco ? ' sin-marco' : ''}" data-indice="0">
+        ${p.destacado ? '<span class="insignia">Destacado</span>' : ''}
+        <div class="pista">${galeria}</div>
+        ${flechas}
+      </div>
+      <div class="cuerpo">
+        <div class="ref">${p.ref}</div>
+        <h3>${p.nombre}</h3>
+        <p class="desc">${p.desc}</p>
+        ${precios}
+      </div>
+      <div class="pie">
+        <span class="min">Mín. ${min} und.</span>
+        ${sesion ? '<button class="btn btn-marca agregar">Agregar</button>'
+                 : '<button class="btn btn-fantasma acceder" type="button">Acceder para cotizar</button>'}
+      </div>
+    </article>`;
+  }
+
+  function pintar() {
+    const lista = filtrados();
+    $('#rejilla').innerHTML = lista.map(tarjetaHTML).join('');
+    $('#vacio').classList.toggle('oculto', lista.length > 0);
+  }
+
+  /* galería: flechas, puntos y swipe */
+  function moverGaleria(gal, delta, absoluto) {
+    const pista = $('.pista', gal);
+    const total = pista.children.length;
+    let i = absoluto !== undefined ? absoluto : (+gal.dataset.indice + delta);
+    i = (i + total) % total;
+    gal.dataset.indice = i;
+    pista.style.transform = `translateX(${-i * 100}%)`;
+    $$('.puntos i', gal).forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+
+  $('#rejilla').addEventListener('click', e => {
+    const flecha = e.target.closest('.flecha');
+    if (flecha) { moverGaleria(flecha.closest('.galeria'), +flecha.dataset.dir); return; }
+    if (e.target.closest('.acceder')) { abrirAcceso(); return; }
+    const btn = e.target.closest('.agregar');
+    if (btn) {
+      const id = btn.closest('.tarjeta').dataset.id;
+      agregar(id);
+    }
+  });
+
+  let x0 = null, galSwipe = null;
+  $('#rejilla').addEventListener('touchstart', e => {
+    galSwipe = e.target.closest('.galeria');
+    if (galSwipe && $$('img', galSwipe).length > 1) x0 = e.touches[0].clientX; else galSwipe = null;
+  }, { passive: true });
+  $('#rejilla').addEventListener('touchend', e => {
+    if (!galSwipe || x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) moverGaleria(galSwipe, dx < 0 ? 1 : -1);
+    x0 = null; galSwipe = null;
+  }, { passive: true });
+
+  /* ---------------------------------------------------------- carrito */
+  let carrito = [];
+  try { carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || '[]'); } catch (e) {}
+  carrito = carrito.filter(l => PRODUCTOS.some(p => p.id === l.id));
+
+  function guardar() {
+    try { localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito)); } catch (e) {}
+  }
+
+  function agregar(id) {
+    const p = PRODUCTOS.find(x => x.id === id);
+    if (!p) return;
+    const existente = carrito.find(l => l.id === id);
+    if (existente) existente.cant += minimoDe(p);
+    else carrito.push({ id, cant: minimoDe(p) });
+    guardar(); refrescarCarrito();
+    brindis(p.nombre + ' agregado');
+  }
+
+  function refrescarCarrito() {
+    const n = carrito.length;
+    $('#cuenta-carrito').textContent = n;
+    $('#cuenta-movil').textContent = n;
+
+    if (!n) {
+      $('#lista-carrito').innerHTML =
+        '<p class="sin-datos">Aún no has seleccionado productos. Agrega los que quieras cotizar y los enviamos juntos a tu ejecutivo.</p>';
+      $('#total-carrito').innerHTML = '$ 0<small>Valor simulado · sin IVA</small>';
+      return;
+    }
+
+    let total = 0, hayConsulta = false;
+    $('#lista-carrito').innerHTML = carrito.map(l => {
+      const p = PRODUCTOS.find(x => x.id === l.id);
+      const precio = precioPara(p, l.cant);
+      if (precio === null) hayConsulta = true; else total += precio * l.cant;
+      return `
+      <div class="linea" data-id="${p.id}">
+        <img src="img/${p.fotos[0]}" alt="${p.nombre}">
+        <div>
+          <div class="t">${p.nombre}</div>
+          <div class="r">${p.ref} · mín. ${minimoDe(p)}</div>
+          <div class="p">${precio === null ? 'Cotización especial' : cop(precio) + ' c/u'}</div>
+          <div class="cant">
+            <button data-paso="-1" aria-label="Restar">−</button>
+            <input type="number" value="${l.cant}" min="${minimoDe(p)}" step="1" aria-label="Cantidad">
+            <button data-paso="1" aria-label="Sumar">+</button>
+          </div>
+        </div>
+        <button class="quitar" aria-label="Quitar">✕</button>
+      </div>`;
+    }).join('');
+
+    $('#total-carrito').innerHTML = cop(total) +
+      `<small>Valor simulado · sin IVA${hayConsulta ? ' · excluye ítems de cotización especial' : ''}</small>`;
+  }
+
+  $('#lista-carrito').addEventListener('click', e => {
+    const linea = e.target.closest('.linea'); if (!linea) return;
+    const l = carrito.find(x => x.id === linea.dataset.id);
+    const p = PRODUCTOS.find(x => x.id === linea.dataset.id);
+    if (e.target.closest('.quitar')) {
+      carrito = carrito.filter(x => x.id !== l.id);
+    } else if (e.target.dataset.paso) {
+      const paso = +e.target.dataset.paso;
+      const min = minimoDe(p);
+      l.cant = Math.max(min, l.cant + paso * (l.cant <= min ? min : 1));
+    } else return;
+    guardar(); refrescarCarrito();
+  });
+
+  $('#lista-carrito').addEventListener('change', e => {
+    if (e.target.tagName !== 'INPUT') return;
+    const linea = e.target.closest('.linea');
+    const l = carrito.find(x => x.id === linea.dataset.id);
+    const p = PRODUCTOS.find(x => x.id === linea.dataset.id);
+    l.cant = Math.max(minimoDe(p), parseInt(e.target.value, 10) || minimoDe(p));
+    guardar(); refrescarCarrito();
+  });
+
+  /* panel */
+  function abrirCarrito(v) {
+    $('#panel-carrito').classList.toggle('abierto', v);
+    $('#velo').classList.toggle('abierto', v);
+  }
+  const abrirCarritoSiHaySesion = () => sesion ? abrirCarrito(true) : abrirAcceso();
+  $('#btn-carrito').addEventListener('click', abrirCarritoSiHaySesion);
+  $('#btn-carrito-movil').addEventListener('click', abrirCarritoSiHaySesion);
+  $('#cerrar-carrito').addEventListener('click', () => abrirCarrito(false));
+  $('#velo').addEventListener('click', () => abrirCarrito(false));
+
+  /* ----------------------------------------------------- comerciales */
+  const conWhatsapp = CONFIG.comerciales.filter(c => c.whatsapp);
+  const conCorreo   = CONFIG.comerciales.filter(c => c.email);
+
+  $('#lista-comerciales').innerHTML = conWhatsapp.length
+    ? conWhatsapp.map((c, i) => `
+        <button class="comercial" data-i="${i}">
+          <span class="av">${c.foto ? `<img src="${c.foto}" alt="">` : c.nombre.trim()[0]}</span>
+          <span><span class="n">${c.nombre}</span><br><span class="c">${c.cargo}</span></span>
+          <span class="wa">WhatsApp</span>
+        </button>`).join('')
+    : `<p class="sin-datos">Aún no hay números de WhatsApp configurados.
+       Agrégalos en <code>js/datos.js</code> → <code>CONFIG.comerciales</code>.</p>`;
+
+  $('#lista-comerciales').addEventListener('click', e => {
+    const b = e.target.closest('.comercial'); if (!b) return;
+    const c = conWhatsapp[+b.dataset.i];
+    const msg = encodeURIComponent(
+      `Hola ${c.nombre}, soy de ${CONFIG.cliente}. Estoy viendo el catálogo IP7 y quiero cotizar unos productos.`);
+    window.open(`https://wa.me/${c.whatsapp}?text=${msg}`, '_blank', 'noopener');
+  });
+
+  $('#f-comercial').innerHTML = conCorreo.length
+    ? (conCorreo.length > 1 ? '<option value="">Selecciona un ejecutivo…</option>' : '') +
+      conCorreo.map((c, i) => `<option value="${i}">${c.nombre} — ${c.cargo}</option>`).join('')
+    : '<option value="">Sin ejecutivos configurados</option>';
+  $('#ayuda-comercial').textContent = conCorreo.length
+    ? 'Obligatorio. La cotización se envía a este ejecutivo con copia a ' + CONFIG.copiaCotizacion + '.'
+    : 'Configura los correos en js/datos.js → CONFIG.comerciales.';
+
+  function abrirModal(sel, v) { $(sel).classList.toggle('abierto', v); }
+  ['#btn-asesor', '#btn-asesor-hero', '#btn-asesor-cta', '#btn-asesor-movil']
+    .forEach(s => $(s).addEventListener('click', () => abrirModal('#modal-asesor', true)));
+  $('#cerrar-asesor').addEventListener('click', () => abrirModal('#modal-asesor', false));
+  $('#modal-asesor').addEventListener('click', e => { if (e.target.id === 'modal-asesor') abrirModal('#modal-asesor', false); });
+
+  /* ----------------------------------------------------- cotización */
+  function textoSolicitud(datos) {
+    const lineas = carrito.map(l => {
+      const p = PRODUCTOS.find(x => x.id === l.id);
+      const precio = precioPara(p, l.cant);
+      return `• ${p.nombre} (${p.ref}) — ${l.cant} und. — ` +
+             (precio === null ? 'cotización especial' : `${cop(precio)} c/u = ${cop(precio * l.cant)}`);
+    });
+    let total = 0;
+    carrito.forEach(l => {
+      const p = PRODUCTOS.find(x => x.id === l.id);
+      const precio = precioPara(p, l.cant);
+      if (precio !== null) total += precio * l.cant;
+    });
+
+    const cab = [
+      `SOLICITUD DE COTIZACIÓN — ${CONFIG.cliente}`,
+      datos ? `Contacto: ${datos.nombre} · ${datos.empresa}` : '',
+      datos ? `Correo: ${datos.email}${datos.tel ? ' · Tel: ' + datos.tel : ''}` : '',
+      datos && datos.fecha ? `Fecha requerida: ${datos.fecha}` : '',
+      ''
+    ].filter(Boolean);
+
+    const pie = [
+      '',
+      `Estimado simulado (sin IVA ni fletes): ${cop(total)}`,
+      'Valores simulados y no oficiales: la cotización final la envía el ejecutivo asignado.',
+      'Incluye 1 logo, 1 tinta, 1 marca; otras marcaciones se cotizan aparte. Imágenes de referencia. Sujeto a inventario.',
+      'Los ítems marcados como cotización especial se valoran aparte.',
+      datos && datos.notas ? '' : null,
+      datos && datos.notas ? 'Notas: ' + datos.notas : null,
+      '',
+      `Catálogo IP7 · precios vigentes hasta el ${CONFIG.vigencia}.`
+    ].filter(x => x !== null);
+
+    return cab.concat(lineas, pie).join('\n');
+  }
+
+  function exigirCarrito() {
+    if (!carrito.length) { brindis('Primero agrega productos'); abrirCarrito(true); return false; }
+    return true;
+  }
+
+  /* condiciones de precio: se muestran antes de cotizar y una vez al iniciar sesión */
+  let alEntender = null;
+  function mostrarCondiciones(continuar) {
+    alEntender = continuar || null;
+    abrirModal('#modal-condiciones', true);
+  }
+  function cerrarCondiciones() {
+    abrirModal('#modal-condiciones', false);
+    const f = alEntender; alEntender = null;
+    if (f) f();
+  }
+  $('#entendido-condiciones').addEventListener('click', cerrarCondiciones);
+  $('#cerrar-condiciones').addEventListener('click', cerrarCondiciones);
+  $('#modal-condiciones').addEventListener('click', e => { if (e.target.id === 'modal-condiciones') cerrarCondiciones(); });
+  $('#ver-condiciones').addEventListener('click', () => mostrarCondiciones());
+
+  $('#btn-cotizar').addEventListener('click', () => {
+    if (!exigirCarrito()) return;
+    abrirCarrito(false);
+    mostrarCondiciones(() => abrirModal('#modal-cotizacion', true));
+  });
+  $('#cerrar-cotizacion').addEventListener('click', () => abrirModal('#modal-cotizacion', false));
+  $('#modal-cotizacion').addEventListener('click', e => { if (e.target.id === 'modal-cotizacion') abrirModal('#modal-cotizacion', false); });
+
+  async function copiar(texto) {
+    try {
+      await navigator.clipboard.writeText(texto);
+      brindis('Solicitud copiada');
+    } catch (e) {
+      const t = document.createElement('textarea');
+      t.value = texto; document.body.appendChild(t); t.select();
+      document.execCommand('copy'); t.remove();
+      brindis('Solicitud copiada');
+    }
+  }
+  $('#btn-copiar').addEventListener('click', () => { if (exigirCarrito()) copiar(textoSolicitud(null)); });
+  $('#btn-copiar-modal').addEventListener('click', () => copiar(textoSolicitud(leerFormulario())));
+
+  function leerFormulario() {
+    return {
+      nombre: $('#f-nombre').value.trim(),
+      empresa: $('#f-empresa').value.trim(),
+      email: $('#f-email').value.trim(),
+      tel: $('#f-tel').value.trim(),
+      fecha: $('#f-fecha').value,
+      notas: $('#f-notas').value.trim()
+    };
+  }
+
+  $('#form-cotizacion').addEventListener('submit', e => {
+    e.preventDefault();
+    const idx = $('#f-comercial').value;
+    if (idx === '') { brindis('Elige a qué ejecutivo dirigirla'); return; }
+    const comercial = conCorreo[+idx];
+    const datos = leerFormulario();
+    const asunto = `Cotización ${CONFIG.cliente} — ${carrito.length} producto(s)`;
+    const url = `mailto:${encodeURIComponent(comercial.email)}` +
+                `?cc=${encodeURIComponent(CONFIG.copiaCotizacion)}` +
+                `&subject=${encodeURIComponent(asunto)}` +
+                `&body=${encodeURIComponent(textoSolicitud(datos))}`;
+    window.location.href = url;
+    brindis('Abriendo tu correo…');
+  });
+
+  /* ------------------------------------------------- acceso: interfaz */
+  function abrirAcceso() {
+    $('#error-acceso').hidden = true;
+    abrirModal('#modal-acceso', true);
+    setTimeout(() => $('#a-usuario').focus(), 60);
+  }
+  function aplicarSesion() {
+    document.documentElement.classList.toggle('con-sesion', sesion);
+    $('#txt-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
+    $('#cajon-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
+  }
+  function alternarSesion() {
+    if (!sesion) { abrirAcceso(); return; }
+    sesion = false;
+    try { localStorage.removeItem(CLAVE_SESION); } catch (e) {}
+    abrirCarrito(false); abrirModal('#modal-cotizacion', false);
+    aplicarSesion(); pintar(); brindis('Sesión cerrada');
+  }
+  $('#btn-login').addEventListener('click', alternarSesion);
+  $('#cajon-login').addEventListener('click', () => { cerrarCajon(); alternarSesion(); });
+  $('#cerrar-acceso').addEventListener('click', () => abrirModal('#modal-acceso', false));
+  $('#modal-acceso').addEventListener('click', e => { if (e.target.id === 'modal-acceso') abrirModal('#modal-acceso', false); });
+  $('#pedir-acceso').addEventListener('click', () => abrirModal('#modal-acceso', false));
+  $('#form-acceso').addEventListener('submit', e => {
+    e.preventDefault();
+    const huella = sha256($('#a-usuario').value.trim().toLowerCase() + ':' + $('#a-clave').value);
+    if (huella !== CONFIG.acceso.hash) { $('#error-acceso').hidden = false; $('#a-clave').select(); return; }
+    sesion = true;
+    try { localStorage.setItem(CLAVE_SESION, huella); } catch (err) {}
+    $('#form-acceso').reset();
+    abrirModal('#modal-acceso', false);
+    aplicarSesion(); pintar(); mostrarCondiciones();
+  });
+
+  /* --------------------------------------------------- secciones nuevas */
+  $('#rejilla-alianzas').innerHTML = PROVEEDORES.map(n => `<div class="alianza">${n}</div>`).join('');
+  $('#catalogos-web').innerHTML = CATALOGOS_WEB.map(c => `
+    <a class="cat-web" href="${c.url}" target="_blank" rel="noopener">
+      <b>${c.nombre}</b><small>${c.detalle}</small><span class="ir">Abrir catálogo →</span>
+    </a>`).join('');
+  const iconoPdf = '<svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM7 13h10v1.6H7V13zm0 3.2h10v1.6H7v-1.6zM7 10h4v1.6H7V10z"/></svg>';
+  $('#catalogos-pdf').innerHTML = CATALOGOS_PDF.map((c, i) => `
+    <${c.url ? `a href="${c.url}" target="_blank" rel="noopener"` : 'button type="button" data-i="' + i + '"'} class="cat-pdf">
+      ${iconoPdf}<b>${c.nombre}</b><small>${c.peso}</small>${c.url ? '<em>Abrir catálogo →</em>' : '<em>Pídelo a tu ejecutivo</em>'}
+    </${c.url ? 'a' : 'button'}>`).join('');
+  $('#catalogos-pdf').addEventListener('click', e => {
+    if (e.target.closest('button.cat-pdf')) abrirModal('#modal-asesor', true);
+  });
+
+  /* --------------------------------------------------------- arranque */
+  aplicarSesion();
+  pintar();
+  refrescarCarrito();
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    abrirCarrito(false);
+    abrirModal('#modal-cotizacion', false);
+    abrirModal('#modal-asesor', false);
+    abrirModal('#modal-acceso', false);
+    if (typeof cerrarCondiciones === 'function' && $('#modal-condiciones').classList.contains('abierto')) cerrarCondiciones();
+    cerrarMega(); cerrarCajon();
+  });
+})();
+
+</script>
+<script>
+/* ==========================================================================
+   IP7 · Catálogo SIEMENS — motor de escena cinemática
+   --------------------------------------------------------------------------
+   Todo se resuelve con variables CSS que se escriben una vez por frame.
+   El scroll se suaviza con lerp y el puntero aporta un parallax discreto.
+   Con "prefers-reduced-motion" los valores saltan y el parallax se anula.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const $  = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+
+  const seccion = $('.cinema');
+  if (!seccion) return;
+
+  const raiz        = document.documentElement;
+  const menosMovim  = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ------------------------------------------------------------- utilidades */
+  const acotar = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
+  const suave  = (a, b, v) => { const x = acotar((v - a) / (b - a)); return x * x * (3 - 2 * x); };
+  const mezcla = (a, b, t) => a + (b - a) * t;
+  /* tramo con entrada y salida: devuelve cuánto "vive" el elemento */
+  const tramo  = (s, a, b, c, d) => {
+    const entra = suave(a, b, s), sale = suave(c, d, s);
+    return { entra, sale, vivo: entra * (1 - sale) };
+  };
+  /* Recorrido normalizado: la coreografía siempre va de 0 a FIN, sin importar
+     cuántos píxeles mida la sección en cada breakpoint. */
+  const FIN = 1550;
+  const recorrido = () => {
+    const total = seccion.offsetHeight - innerHeight;
+    if (total <= 0) return 0;
+    return acotar(-seccion.getBoundingClientRect().top / total) * FIN;
+  };
+
+  /* ---------------------------------------------- reparto del muro de fotos */
+  const DERIVA = [
+    { fx: '-48vw', fy: '-24vh', fs: .58, par: 16 },
+    { fx:  '46vw', fy: '-32vh', fs: .64, par: 10 },
+    { fx: '-56vw', fy:  '12vh', fs: .52, par: 22 },
+    { fx:  '-8vw', fy:  '42vh', fs: .72, par: 14 },
+    { fx:  '52vw', fy:   '8vh', fs: .54, par: 20 },
+    { fx:  '22vw', fy:  '48vh', fs: .68, par: 12 }
+  ];
+  $$('#vitrina figure').forEach((fig, i) => {
+    const d = DERIVA[i % DERIVA.length];
+    fig.style.setProperty('--fx', d.fx);
+    fig.style.setProperty('--fy', d.fy);
+    fig.style.setProperty('--fs', d.fs);
+    fig.style.setProperty('--par', d.par);
+  });
+
+  /* ------------------------------------------------------------ estado rAF */
+  let punteroX = 0, punteroY = 0, destinoX = 0, destinoY = 0;
+  let scrollSuave = 0, scrollDestino = 0, arrancado = false, pendiente = false;
+
+
+  function frame() {
+    pendiente = false;
+    scrollDestino = recorrido();
+
+    if (!arrancado || menosMovim.matches) { scrollSuave = scrollDestino; arrancado = true; }
+    else scrollSuave = mezcla(scrollSuave, scrollDestino, 0.14);
+    if (Math.abs(scrollSuave - scrollDestino) < 0.08) scrollSuave = scrollDestino;
+
+    punteroX = mezcla(punteroX, destinoX, 0.12);
+    punteroY = mezcla(punteroY, destinoY, 0.12);
+
+    const s = scrollSuave;
+    const avance   = acotar(s / FIN);
+    const salida   = suave(40, 430, s);                 /* la portada se va */
+    const apertura = suave(150, 780, s);                /* el muro se abre  */
+    const relA     = tramo(s, 330, 620, 800, 1000);
+    const relB     = tramo(s, 900, 1140, 1320, 1470);
+    const desenf   = acotar(relA.vivo + relB.vivo);
+
+    const px = menosMovim.matches ? 0 : punteroX;
+    const py = menosMovim.matches ? 0 : punteroY;
+
+    const v = raiz.style;
+    v.setProperty('--mx', px.toFixed(4));
+    v.setProperty('--my', py.toFixed(4));
+
+    v.setProperty('--fondo-escala', (1.08 + avance * 0.16).toFixed(4));
+    v.setProperty('--fondo-blur', `${(desenf * 10).toFixed(2)}px`);
+    v.setProperty('--fondo-brillo', (1 - desenf * 0.26).toFixed(4));
+    v.setProperty('--velo-alpha', (desenf * 0.55).toFixed(4));
+
+    v.setProperty('--portada-y', `${(salida * -120).toFixed(1)}px`);
+    v.setProperty('--portada-op', (1 - salida).toFixed(4));
+    v.setProperty('--portada-escala', (1 - salida * 0.05).toFixed(4));
+
+    v.setProperty('--muro-abre', apertura.toFixed(4));
+    v.setProperty('--muro-op', (1 - apertura * 0.74).toFixed(4));
+    v.setProperty('--muro-blur', `${(apertura * 7).toFixed(2)}px`);
+
+    v.setProperty('--relatoA-op', (relA.vivo).toFixed(4));
+    v.setProperty('--relatoA-y', `${(-relA.sale * 70 + (1 - relA.entra) * 36).toFixed(1)}px`);
+    v.setProperty('--relatoB-op', (relB.vivo).toFixed(4));
+    v.setProperty('--relatoB-y', `${(-relB.sale * 70 + (1 - relB.entra) * 36).toFixed(1)}px`);
+
+    if (Math.abs(scrollSuave - scrollDestino) > 0.08 ||
+        Math.abs(punteroX - destinoX) > 0.001 ||
+        Math.abs(punteroY - destinoY) > 0.001) pedirFrame();
+  }
+
+  function pedirFrame() {
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener('scroll', pedirFrame, { passive: true });
+  addEventListener('resize', pedirFrame, { passive: true });
+  addEventListener('pointermove', e => {
+    destinoX = e.clientX / innerWidth - 0.5;
+    destinoY = e.clientY / innerHeight - 0.5;
+    pedirFrame();
+  }, { passive: true });
+  menosMovim.addEventListener('change', pedirFrame);
+
+  pedirFrame();
+
+  /* ------------------------------------- aparición escalonada de las fichas */
+  if (!menosMovim.matches && 'IntersectionObserver' in window) {
+    const rejilla = $('#rejilla');
+    document.documentElement.classList.add('revelar');
+    let observadorVivo = false;
+    const vigia = new IntersectionObserver(entradas => {
+      observadorVivo = true;
+      entradas.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('a-la-vista');
+        vigia.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    const observarFichas = () => $$('.tarjeta:not(.a-la-vista)', rejilla).forEach(t => vigia.observe(t));
+    observarFichas();
+    new MutationObserver(observarFichas).observe(rejilla, { childList: true });
+
+    /* red de seguridad: si el observador nunca responde, mostramos todo igual */
+    setTimeout(() => {
+      if (!observadorVivo) document.documentElement.classList.remove('revelar');
+    }, 3000);
+  }
+})();
+
+</script>
 </body>
 </html>
