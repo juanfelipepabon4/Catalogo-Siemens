@@ -716,6 +716,63 @@ html[data-tema="dia"] .alianza{background:#fff}
 .ver-condiciones{background:none;border:0;padding:0;font:inherit;font-weight:700;color:#fff;text-decoration:underline;cursor:pointer}
 .nota-sim{margin:-6px 0 12px;font-size:11px;color:var(--texto-2);letter-spacing:.02em}
 
+/* ---------- Planeador de presupuesto ---------- */
+.bloqueo-grande{
+  display:flex;max-width:640px;margin:0 auto;padding:22px 24px;text-align:left;font-size:13.5px;
+}
+.caja-presupuesto{
+  max-width:640px;margin:0 auto;padding:clamp(22px,4vw,34px);
+  background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);
+}
+.opciones-tipo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opcion-radio{
+  display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--borde);background:var(--panel-2);transition:border-color .18s,background .18s;
+}
+.opcion-radio input{margin-top:3px;accent-color:var(--marca);flex:0 0 auto}
+.opcion-radio span{display:flex;flex-direction:column;gap:2px}
+.opcion-radio b{font-size:13.5px}
+.opcion-radio small{font-size:11.5px;color:var(--texto-2);line-height:1.35}
+.opcion-radio:hover{border-color:color-mix(in srgb,var(--marca) 45%,transparent)}
+.opcion-radio.activa{border-color:var(--marca);background:color-mix(in srgb,var(--marca) 10%,transparent)}
+.ayuda-presupuesto{margin:12px 0 0;font-size:11.5px;color:var(--texto-2);text-align:center}
+
+.resultado-presupuesto{margin-top:34px}
+.resultado-resumen{text-align:center;font-size:13.5px;color:var(--texto-2);margin:0 0 20px}
+.resultado-resumen b{color:var(--texto)}
+.mensaje-presupuesto{
+  max-width:640px;margin:0 auto;padding:18px 20px;border-radius:12px;text-align:center;
+  border:1px dashed var(--borde);color:var(--texto-2);font-size:13.5px;line-height:1.5;
+}
+.mensaje-presupuesto b{color:var(--texto)}
+
+.rejilla-opciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:start}
+.opcion-presupuesto{
+  background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);
+  padding:18px;display:flex;flex-direction:column;gap:14px;
+}
+.opcion-cab{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.opcion-pct{
+  font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--marca);
+  background:color-mix(in srgb,var(--marca) 14%,transparent);border-radius:999px;padding:5px 11px;
+}
+.opcion-total{font-size:19px;font-weight:700}
+.opcion-items{display:flex;flex-direction:column;gap:10px}
+.opcion-item{display:flex;align-items:center;gap:10px}
+.opcion-item img{width:44px;height:44px;border-radius:9px;object-fit:cover;background:#fff;flex:0 0 auto;border:1px solid var(--borde)}
+.opcion-item div{flex:1;min-width:0}
+.opcion-item b{display:block;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opcion-item small{font-size:11.5px;color:var(--texto-2)}
+.opcion-item > span{font-size:13px;font-weight:600;white-space:nowrap}
+.opcion-pie{display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid var(--borde)}
+.opcion-pie > span{font-size:11.5px;color:var(--texto-2)}
+.opcion-pie .btn{width:100%}
+
+@media (max-width:640px){
+  .opciones-tipo{grid-template-columns:1fr}
+  .bloqueo-grande{padding:18px}
+}
+
 </style>
 </head>
 <body>
@@ -752,6 +809,7 @@ html[data-tema="dia"] .alianza{background:#fff}
         </div>
       </div>
 
+      <a class="menu-enlace" href="#presupuesto">Presupuesto</a>
       <a class="menu-enlace" href="#catalogos">Más catálogos</a>
       <a class="menu-enlace" href="#envios">Envíos</a>
       <a class="menu-enlace" href="#contacto">Contacto</a>
@@ -781,6 +839,7 @@ html[data-tema="dia"] .alianza{background:#fff}
 <div class="cajon" id="cajon" hidden>
   <nav>
     <a href="#catalogo" data-cat="todas">Todo el catálogo</a>
+    <a href="#presupuesto">Arma tu presupuesto</a>
     <div class="cajon-cats" id="cajon-cats"></div>
     <a href="#alianzas">Alianzas</a>
     <a href="#catalogos">Más catálogos</a>
@@ -840,6 +899,60 @@ html[data-tema="dia"] .alianza{background:#fff}
 <div class="aviso">
   Valores simulados, no oficiales · La cotización final la envía tu ejecutivo · Precios sin IVA ni fletes · Sujetos a inventario · <button type="button" class="ver-condiciones" id="ver-condiciones">Ver condiciones de precio</button>
 </div>
+
+<!-- ================= PRESUPUESTO ================= -->
+<section class="seccion" id="presupuesto">
+  <div class="contenedor">
+    <div class="encabezado-centro">
+      <span class="ojo">Planeador</span>
+      <h2>Arma tu presupuesto</h2>
+      <p class="sub">Dinos cuánto tienes para invertir y armamos combinaciones del catálogo que se ajustan.
+         Solo comparamos entre los productos con precio por escala; los de cotización especial no entran en este cálculo.</p>
+    </div>
+
+    <button type="button" class="bloqueo bloqueo-grande" id="bloqueo-presupuesto">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span><b>Calculadora de presupuesto para clientes</b><br>Inicia sesión para armar combinaciones dentro de tu presupuesto.</span>
+    </button>
+
+    <form class="caja-presupuesto" id="form-presupuesto" hidden>
+      <div class="fila-2">
+        <div class="campo">
+          <label for="pr-monto">¿Cuánto presupuesto tienes? (COP)</label>
+          <input id="pr-monto" type="number" min="1" step="1000" inputmode="numeric" placeholder="Ej. 2.000.000" required>
+        </div>
+        <div class="campo">
+          <label for="pr-cantidad">¿Cuántas unidades necesitas en total?</label>
+          <input id="pr-cantidad" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej. 50" required>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>¿Qué tipo de compra prefieres?</label>
+        <div class="opciones-tipo" id="pr-tipo">
+          <label class="opcion-radio activa">
+            <input type="radio" name="pr-tipo" value="variado" checked>
+            <span><b>Producto variado</b><small>Mezclamos varias referencias para repartir tu presupuesto</small></span>
+          </label>
+          <label class="opcion-radio">
+            <input type="radio" name="pr-tipo" value="unico">
+            <span><b>Un solo producto</b><small>Todas las unidades del mismo artículo</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="pr-categoria">Categoría (opcional)</label>
+        <select id="pr-categoria"></select>
+      </div>
+
+      <button type="submit" class="btn btn-marca ancho">Ver opciones</button>
+      <p class="ayuda-presupuesto">Valores simulados de referencia, sin IVA. Tu ejecutivo confirma la cotización final.</p>
+    </form>
+
+    <div class="resultado-presupuesto" id="resultado-presupuesto" hidden></div>
+  </div>
+</section>
 
 <!-- ================= CATÁLOGO ================= -->
 <section class="seccion" id="catalogo">
@@ -1970,6 +2083,9 @@ const ENVIOS = [
     document.documentElement.classList.toggle('con-sesion', sesion);
     $('#txt-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
     $('#cajon-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
+    $('#bloqueo-presupuesto').hidden = sesion;
+    $('#form-presupuesto').hidden = !sesion;
+    if (!sesion) $('#resultado-presupuesto').hidden = true;
   }
   function alternarSesion() {
     if (!sesion) { abrirAcceso(); return; }
@@ -2007,6 +2123,178 @@ const ENVIOS = [
     </${c.url ? 'a' : 'button'}>`).join('');
   $('#catalogos-pdf').addEventListener('click', e => {
     if (e.target.closest('button.cat-pdf')) abrirModal('#modal-asesor', true);
+  });
+
+  /* --------------------------------------------------- planeador de presupuesto */
+  let opcionesPresupuesto = [];
+
+  $('#bloqueo-presupuesto').addEventListener('click', abrirAcceso);
+
+  $('#pr-categoria').innerHTML = '<option value="todas">Todas las categorías</option>' +
+    CONFIG.categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+
+  $$('#pr-tipo input').forEach(r => r.addEventListener('change', () => {
+    $$('.opcion-radio', $('#pr-tipo')).forEach(l => l.classList.toggle('activa', l.querySelector('input').checked));
+  }));
+
+  function elegiblesPresupuesto(categoria) {
+    return PRODUCTOS.filter(p => p.escalas && p.escalas.length && (categoria === 'todas' || p.cat === categoria));
+  }
+
+  /* la opción más barata posible, para sugerirla cuando nada entra en el presupuesto */
+  function opcionMasBarata(elegibles, cantidad) {
+    let mejor = null;
+    for (const p of elegibles) {
+      const cant = Math.max(cantidad, minimoDe(p));
+      const precioU = precioPara(p, cant);
+      if (precioU === null) continue;
+      const total = precioU * cant;
+      if (!mejor || total < mejor.total) mejor = { p, cant, total };
+    }
+    return mejor;
+  }
+
+  function opcionesUnProducto(monto, cantidad, categoria) {
+    const elegibles = elegiblesPresupuesto(categoria);
+    const opciones = [];
+    for (const p of elegibles) {
+      const min = minimoDe(p);
+      const cant = Math.max(cantidad, min);
+      const precioU = precioPara(p, cant);
+      if (precioU === null) continue;
+      const total = precioU * cant;
+      if (total > monto) continue;
+      opciones.push({ items: [{ p, cant, precioU, subtotal: total }], total, ajustada: cant !== cantidad });
+    }
+    opciones.sort((a, b) => b.total - a.total);
+    return opciones.slice(0, 6);
+  }
+
+  /* variado: prueba combinaciones al azar de 2 a 4 productos, reparte la cantidad
+     entre ellos (respetando el mínimo de cada uno) y se queda con las que caben
+     en el presupuesto y mejor lo aprovechan. No es una optimización exacta, pero
+     con unos cientos de intentos encuentra combinaciones razonables al instante. */
+  function opcionesVariadas(monto, cantidad, categoria) {
+    const elegibles = elegiblesPresupuesto(categoria);
+    if (elegibles.length < 2) return [];
+    const vistas = new Set();
+    const combos = [];
+
+    for (let intento = 0; intento < 500; intento++) {
+      const k = Math.min(elegibles.length, 2 + Math.floor(Math.random() * 3));
+      const idx = new Set();
+      while (idx.size < k) idx.add(Math.floor(Math.random() * elegibles.length));
+      const grupo = [...idx].map(i => elegibles[i]);
+      const clave = grupo.map(p => p.id).sort().join('|');
+      if (vistas.has(clave)) continue;
+      vistas.add(clave);
+
+      const mins = grupo.map(minimoDe);
+      if (mins.reduce((a, b) => a + b, 0) > cantidad) continue;
+
+      const base = Math.floor(cantidad / k);
+      const cantidades = grupo.map((_, j) => Math.max(base, mins[j]));
+      const sobra = cantidad - cantidades.reduce((a, b) => a + b, 0);
+      if (sobra > 0) cantidades[0] += sobra;
+
+      const items = grupo.map((p, j) => {
+        const cant = cantidades[j], precioU = precioPara(p, cant);
+        return { p, cant, precioU, subtotal: precioU === null ? null : precioU * cant };
+      });
+      if (items.some(it => it.precioU === null)) continue;
+
+      const total = items.reduce((a, it) => a + it.subtotal, 0);
+      if (total > monto) continue;
+      const unidades = items.reduce((a, it) => a + it.cant, 0);
+      combos.push({ items, total, ajustada: unidades !== cantidad });
+    }
+    combos.sort((a, b) => b.total - a.total);
+    return combos.slice(0, 6);
+  }
+
+  function renderOpcionPresupuesto(op, i, monto) {
+    const unidades = op.items.reduce((a, it) => a + it.cant, 0);
+    const pct = Math.min(100, Math.round((op.total / monto) * 100));
+    return `
+    <article class="opcion-presupuesto">
+      <div class="opcion-cab">
+        <span class="opcion-pct">${pct}% del presupuesto</span>
+        <span class="opcion-total">${cop(op.total)}</span>
+      </div>
+      <div class="opcion-items">
+        ${op.items.map(it => `
+          <div class="opcion-item">
+            <img src="img/${it.p.fotos[0]}" alt="">
+            <div><b>${it.p.nombre}</b><small>${it.p.ref} · ${it.cant} und. · ${cop(it.precioU)} c/u</small></div>
+            <span>${cop(it.subtotal)}</span>
+          </div>`).join('')}
+      </div>
+      <div class="opcion-pie">
+        <span>${unidades} unidades en total${op.ajustada ? ' · ajustado por mínimos de compra' : ''}</span>
+        <button type="button" class="btn btn-marca opcion-agregar" data-i="${i}">Agregar esta opción al carrito</button>
+      </div>
+    </article>`;
+  }
+
+  function pintarPresupuesto(monto, cantidad, tipo, categoria) {
+    const elegibles = elegiblesPresupuesto(categoria);
+    const nombreCat = categoria === 'todas' ? '' : ' en ' + (CONFIG.categorias.find(c => c.id === categoria) || {}).nombre;
+    const cont = $('#resultado-presupuesto');
+    cont.hidden = false;
+
+    if (!elegibles.length) {
+      opcionesPresupuesto = [];
+      cont.innerHTML = `<div class="mensaje-presupuesto">No hay productos con precio por escala${nombreCat}.
+        Prueba con <b>todas las categorías</b>.</div>`;
+      return;
+    }
+
+    opcionesPresupuesto = tipo === 'unico'
+      ? opcionesUnProducto(monto, cantidad, categoria)
+      : opcionesVariadas(monto, cantidad, categoria);
+
+    if (!opcionesPresupuesto.length) {
+      const barata = opcionMasBarata(elegibles, cantidad);
+      const sugerencia = barata
+        ? `La opción más económica${nombreCat} es <b>${barata.p.nombre}</b>: ${barata.cant} und. por <b>${cop(barata.total)}</b>.
+           Ajusta el presupuesto, baja la cantidad${tipo === 'variado' ? ', o prueba con "Un solo producto"' : ''}.`
+        : `No encontramos una combinación que alcance con ese presupuesto y esa cantidad${nombreCat}.`;
+      cont.innerHTML = `<div class="mensaje-presupuesto">Con ese presupuesto no alcanza. ${sugerencia}</div>`;
+      return;
+    }
+
+    cont.innerHTML =
+      `<p class="resultado-resumen">Mostrando <b>${opcionesPresupuesto.length}</b> opción(es)
+         ${tipo === 'unico' ? 'de un solo producto' : 'variadas'} para <b>${cop(monto)}</b>
+         y <b>${cantidad}</b> unidades${nombreCat}.</p>
+       <div class="rejilla-opciones">${opcionesPresupuesto.map((op, i) => renderOpcionPresupuesto(op, i, monto)).join('')}</div>`;
+  }
+
+  $('#form-presupuesto').addEventListener('submit', e => {
+    e.preventDefault();
+    const monto = parseInt($('#pr-monto').value, 10);
+    const cantidad = parseInt($('#pr-cantidad').value, 10);
+    const tipo = $('input[name="pr-tipo"]:checked').value;
+    const categoria = $('#pr-categoria').value;
+    if (!monto || monto <= 0 || !cantidad || cantidad <= 0) {
+      brindis('Completa el presupuesto y la cantidad');
+      return;
+    }
+    pintarPresupuesto(monto, cantidad, tipo, categoria);
+    $('#resultado-presupuesto').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('#resultado-presupuesto').addEventListener('click', e => {
+    const b = e.target.closest('.opcion-agregar');
+    if (!b || !sesion) return;
+    const op = opcionesPresupuesto[+b.dataset.i];
+    if (!op) return;
+    op.items.forEach(it => {
+      const existente = carrito.find(l => l.id === it.p.id);
+      if (existente) existente.cant += it.cant; else carrito.push({ id: it.p.id, cant: it.cant });
+    });
+    guardar(); refrescarCarrito();
+    brindis('Opción agregada: ' + op.items.length + ' producto(s)');
   });
 
   /* --------------------------------------------------------- arranque */
