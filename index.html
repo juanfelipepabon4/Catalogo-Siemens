@@ -716,14 +716,8 @@ html[data-tema="dia"] .alianza{background:#fff}
 .ver-condiciones{background:none;border:0;padding:0;font:inherit;font-weight:700;color:#fff;text-decoration:underline;cursor:pointer}
 .nota-sim{margin:-6px 0 12px;font-size:11px;color:var(--texto-2);letter-spacing:.02em}
 
-/* ---------- Planeador de presupuesto ---------- */
-.bloqueo-grande{
-  display:flex;max-width:640px;margin:0 auto;padding:22px 24px;text-align:left;font-size:13.5px;
-}
-.caja-presupuesto{
-  max-width:640px;margin:0 auto;padding:clamp(22px,4vw,34px);
-  background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);
-}
+/* ---------- Planeador de presupuesto (modal) ---------- */
+.modal .caja-presupuesto-modal{position:relative;width:min(920px,100%);padding:30px 32px}
 .opciones-tipo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .opcion-radio{
   display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:12px;cursor:pointer;
@@ -770,7 +764,7 @@ html[data-tema="dia"] .alianza{background:#fff}
 
 @media (max-width:640px){
   .opciones-tipo{grid-template-columns:1fr}
-  .bloqueo-grande{padding:18px}
+  .modal .caja-presupuesto-modal{padding:22px 18px}
 }
 
 </style>
@@ -809,7 +803,7 @@ html[data-tema="dia"] .alianza{background:#fff}
         </div>
       </div>
 
-      <a class="menu-enlace" href="#presupuesto">Presupuesto</a>
+      <button type="button" class="menu-enlace" id="btn-presupuesto">Presupuesto</button>
       <a class="menu-enlace" href="#catalogos">Más catálogos</a>
       <a class="menu-enlace" href="#envios">Envíos</a>
       <a class="menu-enlace" href="#contacto">Contacto</a>
@@ -839,7 +833,7 @@ html[data-tema="dia"] .alianza{background:#fff}
 <div class="cajon" id="cajon" hidden>
   <nav>
     <a href="#catalogo" data-cat="todas">Todo el catálogo</a>
-    <a href="#presupuesto">Arma tu presupuesto</a>
+    <button type="button" id="cajon-presupuesto">Arma tu presupuesto</button>
     <div class="cajon-cats" id="cajon-cats"></div>
     <a href="#alianzas">Alianzas</a>
     <a href="#catalogos">Más catálogos</a>
@@ -899,60 +893,6 @@ html[data-tema="dia"] .alianza{background:#fff}
 <div class="aviso">
   Valores simulados, no oficiales · La cotización final la envía tu ejecutivo · Precios sin IVA ni fletes · Sujetos a inventario · <button type="button" class="ver-condiciones" id="ver-condiciones">Ver condiciones de precio</button>
 </div>
-
-<!-- ================= PRESUPUESTO ================= -->
-<section class="seccion" id="presupuesto">
-  <div class="contenedor">
-    <div class="encabezado-centro">
-      <span class="ojo">Planeador</span>
-      <h2>Arma tu presupuesto</h2>
-      <p class="sub">Dinos cuánto tienes para invertir y armamos combinaciones del catálogo que se ajustan.
-         Solo comparamos entre los productos con precio por escala; los de cotización especial no entran en este cálculo.</p>
-    </div>
-
-    <button type="button" class="bloqueo bloqueo-grande" id="bloqueo-presupuesto">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      <span><b>Calculadora de presupuesto para clientes</b><br>Inicia sesión para armar combinaciones dentro de tu presupuesto.</span>
-    </button>
-
-    <form class="caja-presupuesto" id="form-presupuesto" hidden>
-      <div class="fila-2">
-        <div class="campo">
-          <label for="pr-monto">¿Cuánto presupuesto tienes? (COP)</label>
-          <input id="pr-monto" type="number" min="1" step="1000" inputmode="numeric" placeholder="Ej. 2.000.000" required>
-        </div>
-        <div class="campo">
-          <label for="pr-cantidad">¿Cuántas unidades necesitas en total?</label>
-          <input id="pr-cantidad" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej. 50" required>
-        </div>
-      </div>
-
-      <div class="campo">
-        <label>¿Qué tipo de compra prefieres?</label>
-        <div class="opciones-tipo" id="pr-tipo">
-          <label class="opcion-radio activa">
-            <input type="radio" name="pr-tipo" value="variado" checked>
-            <span><b>Producto variado</b><small>Mezclamos varias referencias para repartir tu presupuesto</small></span>
-          </label>
-          <label class="opcion-radio">
-            <input type="radio" name="pr-tipo" value="unico">
-            <span><b>Un solo producto</b><small>Todas las unidades del mismo artículo</small></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="campo">
-        <label for="pr-categoria">Categoría (opcional)</label>
-        <select id="pr-categoria"></select>
-      </div>
-
-      <button type="submit" class="btn btn-marca ancho">Ver opciones</button>
-      <p class="ayuda-presupuesto">Valores simulados de referencia, sin IVA. Tu ejecutivo confirma la cotización final.</p>
-    </form>
-
-    <div class="resultado-presupuesto" id="resultado-presupuesto" hidden></div>
-  </div>
-</section>
 
 <!-- ================= CATÁLOGO ================= -->
 <section class="seccion" id="catalogo">
@@ -1126,6 +1066,54 @@ html[data-tema="dia"] .alianza{background:#fff}
       </div>
       <p class="ayuda-acceso">¿No tienes acceso? <a href="#contacto" id="pedir-acceso">Solicítalo a tu ejecutivo</a>.</p>
     </form>
+  </div>
+</div>
+
+<!-- ================= MODAL PRESUPUESTO ================= -->
+<div class="modal" id="modal-presupuesto">
+  <div class="caja caja-presupuesto-modal">
+    <button class="cerrar-x" id="cerrar-presupuesto" aria-label="Cerrar">✕</button>
+    <span class="ojo">Planeador</span>
+    <h3>Arma tu presupuesto</h3>
+    <p class="sub">Dinos cuánto tienes para invertir y armamos combinaciones del catálogo que se ajustan.
+       Solo comparamos entre los productos con precio por escala; los de cotización especial no entran en este cálculo.</p>
+
+    <form id="form-presupuesto">
+      <div class="fila-2">
+        <div class="campo">
+          <label for="pr-monto">¿Cuánto presupuesto tienes? (COP)</label>
+          <input id="pr-monto" type="text" inputmode="numeric" autocomplete="off" placeholder="Ej. 2.000.000" required>
+        </div>
+        <div class="campo">
+          <label for="pr-cantidad">¿Cuántas unidades necesitas en total?</label>
+          <input id="pr-cantidad" type="text" inputmode="numeric" autocomplete="off" placeholder="Ej. 50" required>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>¿Qué tipo de compra prefieres?</label>
+        <div class="opciones-tipo" id="pr-tipo">
+          <label class="opcion-radio activa">
+            <input type="radio" name="pr-tipo" value="variado" checked>
+            <span><b>Producto variado</b><small>Mezclamos varias referencias para repartir tu presupuesto</small></span>
+          </label>
+          <label class="opcion-radio">
+            <input type="radio" name="pr-tipo" value="unico">
+            <span><b>Un solo producto</b><small>Todas las unidades del mismo artículo</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="pr-categoria">Categoría (opcional)</label>
+        <select id="pr-categoria"></select>
+      </div>
+
+      <button type="submit" class="btn btn-marca ancho">Ver opciones</button>
+      <p class="ayuda-presupuesto">Valores simulados de referencia, sin IVA. Tu ejecutivo confirma la cotización final.</p>
+    </form>
+
+    <div class="resultado-presupuesto" id="resultado-presupuesto" hidden></div>
   </div>
 </div>
 
@@ -2083,15 +2071,12 @@ const ENVIOS = [
     document.documentElement.classList.toggle('con-sesion', sesion);
     $('#txt-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
     $('#cajon-login').textContent = sesion ? 'Cerrar sesión' : 'Acceder';
-    $('#bloqueo-presupuesto').hidden = sesion;
-    $('#form-presupuesto').hidden = !sesion;
-    if (!sesion) $('#resultado-presupuesto').hidden = true;
   }
   function alternarSesion() {
     if (!sesion) { abrirAcceso(); return; }
     sesion = false;
     try { localStorage.removeItem(CLAVE_SESION); } catch (e) {}
-    abrirCarrito(false); abrirModal('#modal-cotizacion', false);
+    abrirCarrito(false); abrirModal('#modal-cotizacion', false); abrirModal('#modal-presupuesto', false);
     aplicarSesion(); pintar(); brindis('Sesión cerrada');
   }
   $('#btn-login').addEventListener('click', alternarSesion);
@@ -2128,7 +2113,15 @@ const ENVIOS = [
   /* --------------------------------------------------- planeador de presupuesto */
   let opcionesPresupuesto = [];
 
-  $('#bloqueo-presupuesto').addEventListener('click', abrirAcceso);
+  /* el modal solo se abre con sesión; sin sesión, pide primero iniciar sesión */
+  function abrirPresupuesto() {
+    if (!sesion) { abrirAcceso(); return; }
+    abrirModal('#modal-presupuesto', true);
+  }
+  $('#btn-presupuesto').addEventListener('click', abrirPresupuesto);
+  $('#cajon-presupuesto').addEventListener('click', () => { cerrarCajon(); abrirPresupuesto(); });
+  $('#cerrar-presupuesto').addEventListener('click', () => abrirModal('#modal-presupuesto', false));
+  $('#modal-presupuesto').addEventListener('click', e => { if (e.target.id === 'modal-presupuesto') abrirModal('#modal-presupuesto', false); });
 
   $('#pr-categoria').innerHTML = '<option value="todas">Todas las categorías</option>' +
     CONFIG.categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
@@ -2136,6 +2129,18 @@ const ENVIOS = [
   $$('#pr-tipo input').forEach(r => r.addEventListener('change', () => {
     $$('.opcion-radio', $('#pr-tipo')).forEach(l => l.classList.toggle('activa', l.querySelector('input').checked));
   }));
+
+  /* campos de monto/cantidad: solo dígitos, con puntos de miles mientras se escribe
+     (ej. 1.000.000). Se guarda como texto y se limpia con soloDigitos() al leerlo. */
+  const soloDigitos = valor => (valor || '').replace(/\D/g, '');
+  function formatearMiles(input) {
+    input.addEventListener('input', () => {
+      const digitos = soloDigitos(input.value).slice(0, 15);
+      input.value = digitos ? Number(digitos).toLocaleString('es-CO') : '';
+    });
+  }
+  formatearMiles($('#pr-monto'));
+  formatearMiles($('#pr-cantidad'));
 
   function elegiblesPresupuesto(categoria) {
     return PRODUCTOS.filter(p => p.escalas && p.escalas.length && (categoria === 'todas' || p.cat === categoria));
@@ -2272,8 +2277,8 @@ const ENVIOS = [
 
   $('#form-presupuesto').addEventListener('submit', e => {
     e.preventDefault();
-    const monto = parseInt($('#pr-monto').value, 10);
-    const cantidad = parseInt($('#pr-cantidad').value, 10);
+    const monto = parseInt(soloDigitos($('#pr-monto').value), 10);
+    const cantidad = parseInt(soloDigitos($('#pr-cantidad').value), 10);
     const tipo = $('input[name="pr-tipo"]:checked').value;
     const categoria = $('#pr-categoria').value;
     if (!monto || monto <= 0 || !cantidad || cantidad <= 0) {
@@ -2308,6 +2313,7 @@ const ENVIOS = [
     abrirModal('#modal-cotizacion', false);
     abrirModal('#modal-asesor', false);
     abrirModal('#modal-acceso', false);
+    abrirModal('#modal-presupuesto', false);
     if (typeof cerrarCondiciones === 'function' && $('#modal-condiciones').classList.contains('abierto')) cerrarCondiciones();
     cerrarMega(); cerrarCajon();
   });
