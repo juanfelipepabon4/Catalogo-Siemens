@@ -718,6 +718,12 @@ html[data-tema="dia"] .alianza{background:#fff}
 
 /* ---------- Planeador de presupuesto (modal) ---------- */
 .modal .caja-presupuesto-modal{position:relative;width:min(920px,100%);padding:30px 32px}
+.aviso-presupuesto{
+  margin:0 0 20px;padding:12px 14px;border-radius:12px;font-size:12.5px;line-height:1.5;color:var(--texto-2);
+  border:1px solid color-mix(in srgb,var(--marca) 45%,transparent);
+  background:color-mix(in srgb,var(--marca) 9%,transparent);
+}
+.aviso-presupuesto b{color:var(--texto)}
 .opciones-tipo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .opcion-radio{
   display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:12px;cursor:pointer;
@@ -1078,6 +1084,12 @@ html[data-tema="dia"] .alianza{background:#fff}
     <p class="sub">Dinos cuánto tienes para invertir y armamos combinaciones del catálogo que se ajustan.
        Solo comparamos entre los productos con precio por escala; los de cotización especial no entran en este cálculo.</p>
 
+    <div class="aviso-presupuesto" role="note">
+      <b>Precios aproximados.</b> Los valores de esta calculadora son una referencia y pueden variar según el destino de la
+      entrega, los tiempos de producción y entrega, la técnica de marca, el inventario y otros factores. La cotización final y
+      oficial la envía tu ejecutivo asignado.
+    </div>
+
     <form id="form-presupuesto">
       <div class="fila-2">
         <div class="campo">
@@ -1110,7 +1122,7 @@ html[data-tema="dia"] .alianza{background:#fff}
       </div>
 
       <button type="submit" class="btn btn-marca ancho">Ver opciones</button>
-      <p class="ayuda-presupuesto">Valores simulados de referencia, sin IVA. Tu ejecutivo confirma la cotización final.</p>
+      <p class="ayuda-presupuesto">Valores simulados y aproximados, sin IVA ni fletes. Tu ejecutivo confirma la cotización final.</p>
     </form>
 
     <div class="resultado-presupuesto" id="resultado-presupuesto" hidden></div>
@@ -1221,9 +1233,6 @@ const PRODUCTOS = [
   { id:'bolsa-cambrel-petit', cat:'bolsas', nombre:'Bolsa en Cambrel Petit', ref:'VA-712', sinMarco:true,
     desc:'Sellada, con agarraderas. Medidas: 26.5 cm x 26.5 cm con fuelle de 8 cm en la base. Manijas: 14 cm.',
     fotos:['bolsa-cambrel-petit.jpg'], escalas:[[10,50,16800],[51,100,4500],[101,null,3000]] },
-  { id:'slim-bag', cat:'bolsas', nombre:'Slim Bag', ref:'VA-404',
-    desc:'Bolsa ecológica, útil para tiendas de comestibles, mercados o librerías. Medidas: 37 x 39,3 cm. Longitud manija: 44 cm.',
-    fotos:['slim-bag.jpg'], escalas:[[10,50,17300],[51,100,5100],[101,null,3500]] },
   { id:'sporty-bag-aspen', cat:'bolsas', nombre:'Sporty Bag Aspen', ref:'VA-617', sinMarco:true,
     desc:'Bolsa tula en poliéster 210D. Medidas: 32 cm x 40.5 cm.',
     fotos:['sporty-bag-aspen.jpg'], escalas:[[10,50,19100],[51,100,6900],[101,null,5300]] },
@@ -1254,7 +1263,7 @@ const PRODUCTOS = [
     desc:'Cubierta en poliéster reciclado a partir de botellas plásticas, 80 hojas de papel crema de 70 g con rayas.',
     fotos:['libreta-legend.jpg'], escalas:[[10,50,32800],[51,100,15900],[101,null,14400]] },
   { id:'libreta-igor-jumbo', cat:'libretas', nombre:'Libreta Igor Jumbo', ref:'OF-434-3', sinMarco:true,
-    desc:'Libreta con cubiertas en poliuretano con cierre elástico. 80 hojas color crema con rayas. También disponible en rojo, negro y gris (colores no mostrados en la foto).',
+    desc:'Libreta con cubiertas en poliuretano con cierre elástico. 80 hojas color crema con rayas. También disponible en azul, rojo y gris (colores no mostrados en la foto).',
     fotos:['libreta-igor-jumbo.jpg'], escalas:[[10,50,32500],[51,100,15600],[101,null,14100]] },
   { id:'mini-libreta-like-it-eco', cat:'libretas', nombre:'Mini Libreta Like It Eco', ref:'OF-606', sinMarco:true,
     desc:'Mini libreta argollada de 50 hojas en papel blanco. Opcional con o sin bolígrafo (ref. CARTOON-MI). También disponible en rojo y azul marino (colores no mostrados en la foto).',
@@ -1262,8 +1271,8 @@ const PRODUCTOS = [
   { id:'libreta-igor-80', cat:'libretas', nombre:'Libreta Igor 80 Hojas', ref:'OF-434', sinMarco:true,
     desc:'Libreta en poliuretano con cierre elástico. 80 hojas. No incluye bolígrafo.',
     fotos:['libreta-igor-80.jpg'], escalas:[[10,50,20500],[51,100,12500],[101,null,9700]] },
-  { id:'memo-cube', cat:'libretas', nombre:'Memo Cube', ref:'OF0443',
-    desc:'Set en forma de cubo con espacio para tarjetas o bolígrafos. Contiene taco de 5 colores de 100 hojas cada color.',
+  { id:'memo-cube', cat:'libretas', nombre:'Memo Cube', ref:'OF0443', sinMarco:true,
+    desc:'Set en forma de cubo con espacio para tarjetas o bolígrafos. Contiene taco de 5 colores de 100 hojas cada color. También disponible en blanco, rojo, kraft, negro y verde (colores no mostrados en la foto).',
     fotos:['memo-cube.jpg'], escalas:[[10,50,30200],[51,100,19500],[101,null,16700]] },
   { id:'memo-sticky-set-ring', cat:'libretas', nombre:'Memo Sticky Set Ring', ref:'OF-532', sinMarco:true,
     desc:'Set de portastickies de cartón argollado doble O. 5 tacos de hojas autoadhesivas x 25 und. y 5 stickies de colores.',
@@ -1277,7 +1286,7 @@ const PRODUCTOS = [
 
   /* ---------- Bolígrafos ---------- */
   { id:'boligrafo-ventura-frost', cat:'boligrafos', nombre:'Ventura Frost', ref:'VENT-FROST', sinMarco:true,
-    desc:'Bolígrafo plástico con clip metálico. Medidas: 14 cm.',
+    desc:'Bolígrafo plástico con clip metálico. Medidas: 14 cm. También disponible en naranja, morado, verde, amarillo y rojo (colores no mostrados en la foto).',
     fotos:['boligrafo-ventura-frost.jpg'], escalas:[[100,200,2800],[201,500,1900],[501,null,1400]] },
   { id:'boligrafo-ventura-eco', cat:'boligrafos', nombre:'Bolígrafo Ventura Eco', ref:'VENT-ECO-B', sinMarco:true,
     desc:'Bolígrafo plástico con parte inferior en bambú natural. Clip metálico. Mezcla con material ecológico en fibra de trigo. También disponible en rojo, verde y natural (colores no mostrados en la foto).',
@@ -1306,7 +1315,7 @@ const PRODUCTOS = [
     desc:'Poliéster pongee 190T. Apertura automática, cierre manual. Marco en fibra de vidrio. También disponible en plateado (color no mostrado en la foto).',
     fotos:['paraguas-gentle-27.jpg'], escalas:[[20,50,107000],[51,100,99400],[101,null,96600]] },
   { id:'paraguas-freerain-23', cat:'paraguas', nombre:'Paraguas Freerain 23"', ref:'SO-50', sinMarco:true,
-    desc:'Paraguas invertido (abre al revés) de 23". Poliéster pongee 190T doble tela. Apertura manual. También disponible en amarillo, verde, gris, azul marino y negro (colores no mostrados en la foto).',
+    desc:'Paraguas invertido (abre al revés) de 23". Poliéster pongee 190T doble tela. Apertura manual. También disponible en rojo, amarillo, verde, gris y azul marino (colores no mostrados en la foto).',
     fotos:['paraguas-freerain-23.jpg'], escalas:[[20,50,58300],[51,100,51300],[101,null,49100]] },
   { id:'mini-paraguas-strap-21', cat:'paraguas', nombre:'Mini Paraguas Strap 21"', ref:'SO-43', sinMarco:true,
     desc:'Poliéster pongee 190T. Plegable, mango con acabado en caucho y herraje metálico. Apertura semiautomática. También disponible en rojo, naranja, amarillo, verde, azul y gris (colores no mostrados en la foto).',
@@ -1315,7 +1324,7 @@ const PRODUCTOS = [
     desc:'Poliéster pongee 190T. Correa en velcro, mango en plástico y herraje metálico con fibra de vidrio blanco. Apertura y cierre automáticos con sistema antibrisa.',
     fotos:['mini-paraguas-21.jpg'], escalas:[[20,50,40000],[51,100,33300],[101,null,31300]] },
   { id:'paraguas-trendy-27', cat:'paraguas', nombre:'Paraguas Trendy Poliéster 27"', ref:'SO-17-2', destacado:true, sinMarco:true,
-    desc:'Poliéster con interior plateado. Mango en espuma y herraje metálico. 8 cascos. Semiautomático. También disponible en rojo, verde, negro, naranja, morado, gris y amarillo (colores no mostrados en la foto).',
+    desc:'Poliéster con interior plateado. Mango en espuma y herraje metálico. 8 cascos. Semiautomático. También disponible en rojo, verde, naranja, morado, gris, azul y amarillo (colores no mostrados en la foto).',
     fotos:['paraguas-trendy-27.jpg'], escalas:[[20,50,48300],[51,100,41300],[101,null,39400]] },
   { id:'gorra-acrilica', cat:'paraguas', nombre:'Gorra Acrílica', ref:'DP', sinMarco:true,
     desc:'Diseñada para brindar comodidad y estilo. El material acrílico ofrece durabilidad, suavidad y un ajuste perfecto.',
@@ -1323,8 +1332,8 @@ const PRODUCTOS = [
   { id:'gorra-brixton', cat:'paraguas', nombre:'Gorra Brixton', ref:'CAP-30', sinMarco:true,
     desc:'Gorra en poliéster de alta calidad, de 6 paneles, con visera indeformable, botón forrado y cierre de hebilla metálica.',
     fotos:['gorra-brixton.jpg'], escalas:[[10,50,27000],[51,100,21300],[101,null,19300]] },
-  { id:'gorra-golf', cat:'paraguas', nombre:'Gorra Golf', ref:'CAP-13',
-    desc:'5 paneles en dril liviano, visera indeformable, frente fusionado, encintado interior, tafilete sencillo y cierre plástico.',
+  { id:'gorra-golf', cat:'paraguas', nombre:'Gorra Golf', ref:'CAP-13', sinMarco:true,
+    desc:'5 paneles en dril liviano, visera indeformable, frente fusionado, encintado interior, tafilete sencillo y cierre plástico. También disponible en azul oscuro, azul, rojo, negro y amarillo (colores no mostrados en la foto).',
     fotos:['gorra-golf.jpg'], escalas:[[10,50,19700],[51,100,14000],[101,null,12200]] },
 
   /* ---------- Botilitos, Mugs y Café ---------- */
@@ -1338,13 +1347,13 @@ const PRODUCTOS = [
     desc:'Cafetera prensa francesa con filtro de aluminio. Vidrio de borosilicato y tapa de bambú. Capacidad 600 ml. Empaque caja individual.',
     fotos:['cafetera-vidrio-600.jpg'], escalas:[[10,50,55300],[51,100,47200],[101,null,44700]] },
   { id:'botilito-sport-laguna', cat:'bebidas', nombre:'Botilito Sport Laguna', ref:'MU-11', sinMarco:true,
-    desc:'Botilito en AS, con agarradera plástica y tapa rosca. Libre de BPA. También disponible en rojo y negro (colores no mostrados en la foto).',
+    desc:'Botilito en AS, con agarradera plástica y tapa rosca. Libre de BPA. También disponible en azul y rojo (colores no mostrados en la foto).',
     fotos:['botilito-sport-laguna.jpg'], escalas:[[10,50,29300],[51,100,20100],[101,null,17700]] },
   { id:'botilito-pet-610', cat:'bebidas', nombre:'Botilito en PET 610ml', ref:'MU-90', sinMarco:true,
     desc:'Botilito en PET con tapa en ABS super resistente, con empaque individual. Consultar inventario de tapas.',
     fotos:['botilito-pet-610.jpg'], escalas:[[10,50,19700],[51,100,10500],[101,null,8400]] },
   { id:'botilito-pvc-helice-650', cat:'bebidas', nombre:'Botilito en PVC Hélice 650ml', ref:'MU-59', sinMarco:true,
-    desc:'Botilito en PVC atóxico, tapa rosca con pestaña y diseño ergonómico. Producción nacional. También disponible en verde, morado, naranja, negro, blanco, rosado, amarillo y rojo (colores no mostrados en la foto).',
+    desc:'Botilito en PVC atóxico, tapa rosca con pestaña y diseño ergonómico. Producción nacional. También disponible en azul, verde, morado, naranja, blanco, rosado, amarillo y rojo (colores no mostrados en la foto).',
     fotos:['botilito-pvc-helice-650.jpg'], escalas:[[10,50,19300],[51,100,10200],[101,null,8100]] },
   { id:'mug-plastico-350', cat:'bebidas', nombre:'Mug Plástico 350ml', ref:'MU-407', sinMarco:true,
     desc:'Mug plástico con interior en acero inoxidable. Taparrosca de seguridad. Empaque caja individual. También disponible en negro y blanco (colores no mostrados en la foto).',
@@ -1353,10 +1362,10 @@ const PRODUCTOS = [
     desc:'Cerámica con base en corcho y tapa plástica. No apto para microondas ni lavavajillas. Tapa protectora de cierre a presión. También disponible en azul oscuro con base de corcho (color no mostrado en la foto).',
     fotos:['mug-ceramica-11oz.jpg'], escalas:[[36,72,38300],[73,108,28900],[109,null,26800]] },
   { id:'mug-ceramica-tablero-11oz', cat:'bebidas', nombre:'Mug Cerámica Tablero 11oz', ref:'MU-06', sinMarco:true,
-    desc:'Mug para escribir con tiza, borrable como un tablero. Incluye tiza blanca. Apto para microondas y lavavajillas. Empaque caja individual.',
+    desc:'Mug para escribir con tiza, borrable como un tablero. Incluye tiza blanca. Apto para microondas y lavavajillas. Empaque caja individual. También disponible con borde interior rojo, verde y azul oscuro (colores no mostrados en la foto).',
     fotos:['mug-ceramica-tablero-11oz.jpg'], escalas:[[36,72,21500],[73,108,15100],[109,null,14000]] },
   { id:'mug-ceramica-10oz', cat:'bebidas', nombre:'Mug Cerámica 10oz', ref:'VA-126', sinMarco:true,
-    desc:'Mug de cerámica en forma cuadrada. Apto para microondas y lavavajillas.',
+    desc:'Mug de cerámica en forma cuadrada. Apto para microondas y lavavajillas. También disponible en rojo, verde, blanco y azul oscuro (colores no mostrados en la foto).',
     fotos:['mug-ceramica-10oz.jpg'], escalas:[[36,72,17500],[73,108,15900],[109,null,14900]] },
 
   /* ---------- Tecnología ---------- */
@@ -1398,9 +1407,9 @@ const PRODUCTOS = [
   { id:'pin-pintado', cat:'reconocimientos', nombre:'Pin Pintado', ref:'Consultar', sinMarco:true,
     desc:'Pin en troquel pintado. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
     fotos:['pin-pintado.jpg'], escalas:[], cotizacion:true },
-  { id:'pin-litorrecina', cat:'reconocimientos', nombre:'Pin en Litorrecina', ref:'Consultar', sinMarco:true,
-    desc:'Pin personalizado en litorrecina. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
-    fotos:['pin-litorrecina.jpg'], escalas:[], cotizacion:true },
+  { id:'pin-litoresina', cat:'reconocimientos', nombre:'Pin en Litoresina', ref:'Consultar', sinMarco:true,
+    desc:'Pin personalizado en litoresina. Ideal para llevar tu marca a todas partes con estilo y personalidad.',
+    fotos:['pin-litoresina.jpg'], escalas:[], cotizacion:true },
   { id:'placa-reconocimiento', cat:'reconocimientos', nombre:'Placa de Reconocimiento', ref:'Consultar', sinMarco:true,
     desc:'Placa personalizada, ideal para reconocer el esfuerzo de tus colaboradores y de quienes dejan huella. Un detalle significativo que celebra logros y compromiso.',
     fotos:['placa-reconocimiento.jpg'], escalas:[], cotizacion:true },
@@ -2271,7 +2280,8 @@ const ENVIOS = [
     cont.innerHTML =
       `<p class="resultado-resumen">Mostrando <b>${opcionesPresupuesto.length}</b> opción(es)
          ${tipo === 'unico' ? 'de un solo producto' : 'variadas'} para <b>${cop(monto)}</b>
-         y <b>${cantidad}</b> unidades${nombreCat}.</p>
+         y <b>${cantidad}</b> unidades${nombreCat}.<br>
+         <small>Precios aproximados: pueden variar según destino, tiempos y otros factores. La cotización final la envía tu ejecutivo.</small></p>
        <div class="rejilla-opciones">${opcionesPresupuesto.map((op, i) => renderOpcionPresupuesto(op, i, monto)).join('')}</div>`;
   }
 
