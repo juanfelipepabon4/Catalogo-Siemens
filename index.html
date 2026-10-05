@@ -6,7 +6,8 @@
 <title>Catálogo SIEMENS · IP7 Imagen Perfecta Sie7e</title>
 <meta name="description" content="Catálogo corporativo personalizado para SIEMENS. Merchandising, tecnología, reconocimientos y textil con marca. Cotiza en línea con tu ejecutivo IP7.">
 <meta name="theme-color" content="#061a1d">
-<link rel="icon" href="img/logo-ip7-noche.png">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
@@ -773,6 +774,46 @@ html[data-tema="dia"] .alianza{background:#fff}
   .modal .caja-presupuesto-modal{padding:22px 18px}
 }
 
+/* ---------- Visor de imágenes (zoom) ---------- */
+.galeria .pista img{cursor:zoom-in}
+.galeria .lupa{
+  position:absolute;top:8px;right:8px;z-index:2;width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;pointer-events:none;
+  background:rgba(6,26,29,.62);color:#fff;opacity:.9;
+}
+.visor{
+  position:fixed;inset:0;z-index:110;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(2,10,12,.92);padding:56px 16px 74px;
+}
+.visor[hidden]{display:none}
+.visor-lienzo{
+  width:min(1200px,100%);max-height:100%;flex:0 1 auto;min-height:0;overflow:auto;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;background:#0b1a1d;cursor:zoom-in;
+  scrollbar-width:thin;
+}
+.visor-lienzo img{display:block;max-width:100%;max-height:calc(100dvh - 140px);width:auto;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.visor-lienzo.ampliada{cursor:grab;display:block;flex:1 1 auto}
+.visor-lienzo.ampliada.arrastrando{cursor:grabbing}
+.visor-lienzo.ampliada img{max-width:none;max-height:none;width:var(--zoom-ancho,2000px);height:auto}
+.visor-cerrar{
+  position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;cursor:pointer;
+  border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;font-size:18px;z-index:2;
+}
+.visor-cerrar:hover{background:rgba(255,255,255,.24)}
+.visor-flecha{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:46px;height:46px;border-radius:50%;cursor:pointer;
+  border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);color:#fff;font-size:26px;line-height:1;
+}
+.visor-flecha.izq{left:14px}.visor-flecha.der{right:14px}
+.visor-flecha[hidden]{display:none}
+.visor-pie{position:absolute;left:0;right:0;bottom:16px;display:flex;flex-direction:column;align-items:center;gap:2px;color:#fff;padding:0 16px;text-align:center}
+.visor-pie b{font-size:14px;font-weight:600}
+.visor-pie span{font-size:11.5px;color:rgba(255,255,255,.65)}
+@media (max-width:640px){
+  .visor{padding:56px 8px 80px}
+  .visor-flecha{width:38px;height:38px;font-size:22px}
+}
+
 </style>
 </head>
 <body>
@@ -1139,6 +1180,15 @@ html[data-tema="dia"] .alianza{background:#fff}
       <button class="btn btn-fantasma" id="cerrar-asesor">Cerrar</button>
     </div>
   </div>
+</div>
+
+<!-- ================= VISOR DE IMÁGENES (zoom) ================= -->
+<div class="visor" id="visor" hidden role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+  <button class="visor-cerrar" id="visor-cerrar" aria-label="Cerrar">✕</button>
+  <button class="visor-flecha izq" id="visor-ant" aria-label="Foto anterior" hidden>‹</button>
+  <button class="visor-flecha der" id="visor-sig" aria-label="Foto siguiente" hidden>›</button>
+  <div class="visor-lienzo" id="visor-lienzo"><img id="visor-img" alt=""></div>
+  <div class="visor-pie"><b id="visor-nombre"></b><span id="visor-ayuda">Toca la imagen para acercar y ver el detalle de la marca</span></div>
 </div>
 
 <div id="brindis"></div>
@@ -1779,6 +1829,7 @@ const ENVIOS = [
     <article class="tarjeta" data-id="${p.id}">
       <div class="galeria${p.vertical ? ' vertical' : ''}${p.formato === 'alto' ? ' alta' : ''}${p.sinMarco ? ' sin-marco' : ''}" data-indice="0">
         ${p.destacado ? '<span class="insignia">Destacado</span>' : ''}
+        <span class="lupa" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5M11 8v6M8 11h6"/></svg></span>
         <div class="pista">${galeria}</div>
         ${flechas}
       </div>
@@ -1817,6 +1868,12 @@ const ENVIOS = [
     const flecha = e.target.closest('.flecha');
     if (flecha) { moverGaleria(flecha.closest('.galeria'), +flecha.dataset.dir); return; }
     if (e.target.closest('.acceder')) { abrirAcceso(); return; }
+    const foto = e.target.closest('.galeria .pista img');
+    if (foto) {
+      const gal = foto.closest('.galeria');
+      abrirVisor(foto.closest('.tarjeta').dataset.id, +gal.dataset.indice || 0);
+      return;
+    }
     const btn = e.target.closest('.agregar');
     if (btn) {
       const id = btn.closest('.tarjeta').dataset.id;
@@ -2312,6 +2369,86 @@ const ENVIOS = [
     brindis('Opción agregada: ' + op.items.length + ' producto(s)');
   });
 
+  /* ------------------------------------------------------ visor de imágenes (zoom) */
+  const visor = $('#visor'), lienzo = $('#visor-lienzo'), visorImg = $('#visor-img');
+  let visorProducto = null, visorIndice = 0;
+
+  function cargarFotoVisor() {
+    const p = visorProducto;
+    visorImg.src = 'img/' + p.fotos[visorIndice];
+    visorImg.alt = p.nombre;
+    $('#visor-nombre').textContent = p.nombre + (p.fotos.length > 1 ? ` · foto ${visorIndice + 1} de ${p.fotos.length}` : '');
+    $('#visor-ant').hidden = $('#visor-sig').hidden = p.fotos.length < 2;
+    acercar(false);
+  }
+  function abrirVisor(id, indice) {
+    visorProducto = PRODUCTOS.find(x => x.id === id);
+    if (!visorProducto) return;
+    visorIndice = Math.min(indice, visorProducto.fotos.length - 1);
+    visor.hidden = false;
+    document.body.style.overflow = 'hidden';
+    cargarFotoVisor();
+    $('#visor-cerrar').focus();
+  }
+  function cerrarVisor() {
+    if (visor.hidden) return;
+    visor.hidden = true;
+    visorImg.removeAttribute('src');
+    acercar(false);
+    document.body.style.overflow = '';
+  }
+  function moverVisor(d) {
+    if (!visorProducto || visorProducto.fotos.length < 2) return;
+    visorIndice = (visorIndice + d + visorProducto.fotos.length) % visorProducto.fotos.length;
+    cargarFotoVisor();
+  }
+
+  /* acercar: la imagen crece dentro del lienzo y se desplaza arrastrando (o con el dedo) */
+  function acercar(si, fx = .5, fy = .5) {
+    lienzo.classList.toggle('ampliada', si);
+    if (!si) { lienzo.scrollLeft = lienzo.scrollTop = 0; return; }
+    lienzo.style.setProperty('--zoom-ancho', Math.min(2000, Math.round(lienzo.clientWidth * 2.4)) + 'px');
+    requestAnimationFrame(() => {
+      lienzo.scrollLeft = fx * lienzo.scrollWidth - lienzo.clientWidth / 2;
+      lienzo.scrollTop  = fy * lienzo.scrollHeight - lienzo.clientHeight / 2;
+    });
+  }
+
+  let arrastre = null;
+  lienzo.addEventListener('pointerdown', e => {
+    if (!lienzo.classList.contains('ampliada') || e.pointerType === 'touch') return;
+    arrastre = { x: e.clientX, y: e.clientY, sl: lienzo.scrollLeft, st: lienzo.scrollTop, movido: false };
+    lienzo.setPointerCapture(e.pointerId);
+    lienzo.classList.add('arrastrando');
+  });
+  lienzo.addEventListener('pointermove', e => {
+    if (!arrastre) return;
+    const dx = e.clientX - arrastre.x, dy = e.clientY - arrastre.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) arrastre.movido = true;
+    lienzo.scrollLeft = arrastre.sl - dx;
+    lienzo.scrollTop  = arrastre.st - dy;
+  });
+  const finArrastre = () => { lienzo.classList.remove('arrastrando'); };
+  lienzo.addEventListener('pointerup', finArrastre);
+  lienzo.addEventListener('pointercancel', finArrastre);
+  lienzo.addEventListener('click', e => {
+    if (arrastre && arrastre.movido) { arrastre = null; return; }   /* fue un arrastre, no un clic */
+    arrastre = null;
+    if (lienzo.classList.contains('ampliada')) { acercar(false); return; }
+    const r = visorImg.getBoundingClientRect();
+    acercar(true, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+  });
+
+  $('#visor-cerrar').addEventListener('click', cerrarVisor);
+  $('#visor-ant').addEventListener('click', () => moverVisor(-1));
+  $('#visor-sig').addEventListener('click', () => moverVisor(1));
+  visor.addEventListener('click', e => { if (e.target === visor) cerrarVisor(); });
+  document.addEventListener('keydown', e => {
+    if (visor.hidden) return;
+    if (e.key === 'ArrowLeft') moverVisor(-1);
+    if (e.key === 'ArrowRight') moverVisor(1);
+  });
+
   /* --------------------------------------------------------- arranque */
   aplicarSesion();
   pintar();
@@ -2324,6 +2461,7 @@ const ENVIOS = [
     abrirModal('#modal-asesor', false);
     abrirModal('#modal-acceso', false);
     abrirModal('#modal-presupuesto', false);
+    cerrarVisor();
     if (typeof cerrarCondiciones === 'function' && $('#modal-condiciones').classList.contains('abierto')) cerrarCondiciones();
     cerrarMega(); cerrarCajon();
   });
